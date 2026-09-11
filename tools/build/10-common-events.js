@@ -289,23 +289,7 @@ function build(reg) {
   }
 
   // ---------------------------------------------------------------- CE_009
-  {
-    const c = new CmdList();
-    c.comment([
-      "CE_009 Refresh NPC schedules.",
-      "Instance switches are cleared FIRST, then at most one is turned back on,",
-      "so the singleton invariant holds even if this is re-entered.",
-      "Populated by tools/build/30-npc-schedules.js once schedules are generated.",
-    ].join("\n"));
-    for (const [name, id] of Object.entries(reg.switches.byName)) {
-      if (/_Schedule_Valid$/.test(name)) c.switchOff(S(name));
-    }
-    c.comment("<<GENERATED_SCHEDULE_BRANCHES>>");
-    for (const [name, id] of Object.entries(reg.switches.byName)) {
-      if (/_Schedule_Valid$/.test(name)) c.switchOn(S(name));
-    }
-    add(9, "CE_009_Refresh_NPC_Schedules", c.done());
-  }
+  add(9, "CE_009_Refresh_NPC_Schedules", require("./50-npc-schedules").buildRefreshSchedules(reg).list);
 
   // ---------------------------------------------------------------- CE_010
   {

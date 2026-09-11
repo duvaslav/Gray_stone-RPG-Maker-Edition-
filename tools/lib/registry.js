@@ -31,6 +31,12 @@ function build() {
     if (id && n) { put(vr, id, n); vr.init[id] = num(r["начальное значение"], 0); }
   }
   for (const [id, d] of Object.entries(ext.switches)) put(sw, Number(id), d.name);
+  // One switch per NPC map instance. Allocated from 1000, clear of every range
+  // the workbook uses (its highest is 905), so no existing numeric ID moves.
+  // These drive instance page conditions; see tools/build/50-npc-schedules.js.
+  for (const [, a] of Object.entries(require("../build/50-npc-schedules").allocateSwitches())) {
+    put(sw, a.id, a.name);
+  }
   for (const [id, d] of Object.entries(ext.variables)) {
     put(vr, Number(id), d.name);
     vr.init[Number(id)] = d.init || 0;

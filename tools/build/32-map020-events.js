@@ -263,46 +263,12 @@ function build(reg, ctx) {
     reserved.add("4,8");
   }
 
-  // --- 5. Roland, the one NPC instance the Day 1 slice needs ---------------
-  {
-    const c = new CmdList();
-    c.comment([
-      "PAT_NPC_INSTANCE Roland, main hall, Day 1 evening.",
-      "Talking costs no AP and no minutes -- only investigation does.",
-    ].join("\n"));
-    c.varSet(V("V_0025_Current_NPC_ID"), 1);
-    c.ifSwitch(S("S_0013_Arrived"));
-      c.ifVar(V("V_0101_Talk_Count_roland"), 0, 0);
-        c.text(["Дом готов принять вас, господин граф.", "Ужин подадут в девять."],
-               { faceName: "People1", faceIndex: 0, background: 0, speaker: "Роланд" });
-        c.text(["Если позволите — госпожа Марлена", "ждала этого разговора весь месяц."],
-               { faceName: "People1", faceIndex: 0, background: 0, speaker: "Роланд" });
-        c.varAdd(V("V_0101_Talk_Count_roland"), 1);
-        c.varFromVar(V("V_0103_Last_Talk_Day_roland"), V("V_0001_Current_Day"), 0);
-        c.varFromVar(V("V_0104_Last_Talk_Block_roland"), V("V_0004_Time_Block"), 0);
-      c.else_();
-        c.comment("Already spoken to this run: hand off to the repeat-dialogue system.");
-        c.callCommon(17);
-      c.endIf();
-    c.else_();
-      c.text(["…"], { background: 0 });
-    c.endIf();
-    c.varSet(V("V_0025_Current_NPC_ID"), 0);
-
-    add(event({
-      name: "EV_NPC_roland_hall", x: 22, y: 20,
-      note: "<npc:roland><instance:hall>",
-      pages: [
-        page({
-          trigger: 0, priorityType: 1, directionFix: false, walkAnime: true,
-          conditions: { switch1Valid: true, switch1Id: S("S_0800_NPC_roland_Schedule_Valid") },
-          image: { characterName: "People1", characterIndex: 0, direction: DIR.DOWN, pattern: 1 },
-          list: c.done(),
-        }),
-      ],
-    }));
-    reserved.add("22,20");
-  }
+  // --- 5. NPC instances ----------------------------------------------------
+  // Generated from 18_NPC_Schedules / 19_NPC_Map_Instances by
+  // tools/build/50-npc-schedules.js, which also enforces the singleton rule.
+  // The hand-written Roland placeholder that used to live here was superseded by
+  // it: it had only an active page, so it blocked its cell and showed its sprite
+  // regardless of the schedule -- exactly what the inactive-instance test catches.
 
   return { events, reserved };
 }

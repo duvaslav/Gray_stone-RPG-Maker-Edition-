@@ -11,6 +11,7 @@ const map005ev = require("./21-map005-events");
 const map020 = require("./30-map020-ground");
 const map020furnish = require("./31-map020-furnish");
 const map020ev = require("./32-map020-events");
+const npcSched = require("./50-npc-schedules");
 const tiles = require("../lib/tiles");
 
 const ROOT = path.join(__dirname, "..", "..");
@@ -157,7 +158,24 @@ function main() {
     // in that cell -- one object per cell, never a tile and an event disagreeing.
     ctx.reserved = evb.reserved;
     const fres = map020furnish.furnish(ctx);
+
+    // NPC instances. Anchors are spread BEFORE the events are built so no two
+    // people share a cell, and furniture cells are known so nobody is placed
+    // inside a bookcase.
+    const flagsNow = flagsFor(map020.TILESET_ID);
+    ctx.blockedByFurniture = new Set(
+      fres.placed.filter((p) => p.z === 1 && !ctx.map.isWalkable(p.x, p.y, flagsNow)).map((p) => `${p.x},${p.y}`)
+    );
+    const alloc = npcSched.allocateSwitches();
+    const onThisMap = Object.values(alloc)
+      .map((a) => a.inst)
+      .filter((i) => i.mapKey === "MAP_020_Manor_Ground_Floor")
+      .sort((a, b) => a.eventName.localeCompare(b.eventName));
+    const movedAnchors = npcSched.spreadAnchors(onThisMap, ctx);
+    const npcEvents = npcSched.buildInstanceEvents(reg, "MAP_020_Manor_Ground_Floor", alloc, ctx);
+
     for (const ev of evb.events) ctx.map.addEvent(ev);
+    for (const ev of npcEvents) ctx.map.addEvent(ev);
 
     const flags = flagsFor(map020.TILESET_ID);
     const reach = ctx.map.reachable(22, 31, flags);
@@ -172,7 +190,10 @@ function main() {
 
     write("Map020.json", ctx.map.toJSON());
     registerMap(20, "MAP_020_Manor_Ground_Floor", 0, 2);
-    console.log(`  Map020    ${ctx.map.width}x${ctx.map.height}, ${evb.events.length} events, ${fres.placed.length} furnishings, ${reach.size} reachable cells, 0 dead cells`);
+    console.log(`  Map020    ${ctx.map.width}x${ctx.map.height}, ${evb.events.length + npcEvents.length} events (${npcEvents.length} NPC instances), ${fres.placed.length} furnishings, ${reach.size} reachable cells, 0 dead cells`);
+    if (movedAnchors.length) {
+      console.log(`            ${movedAnchors.length} NPC anchor(s) spread off a shared cell (D-12)`);
+    }
   }
 
   write("MapInfos.json", mapInfos);

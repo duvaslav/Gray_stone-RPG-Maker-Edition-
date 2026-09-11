@@ -31,6 +31,7 @@ A workbook status of `READY`, `PASS` or `READY_EXACT_COMMAND` means the
 | Day cycle 1→10 → final phase | logic executed | no double-advance |
 | Ending resolver | logic executed | 96/96 combinations resolve |
 | Save / load | logic executed | culprit, clock, AP, evidence, history all survive |
+| NPC schedules + singleton (CE_009) | logic executed | 700 (npc, day, block) combinations: never two instances of one NPC; zero shared cells |
 | `GrayStone_Core`, `_MessageUI`, `_8DirMovement` | `GENERATED`, syntax-checked | **`EDITOR_VERIFIED` blocked** |
 | Message window appearance | `BLOCKED` | needs the runtime |
 | Audio playback, tilesets, sprites, faces | `BLOCKED` | assets absent by licence |
@@ -62,7 +63,7 @@ wins, ★ skipped). That is a faithful static model, but it is still static.
 
 ```
 node tools/validate/validate.js   ->  0 errors, 0 warnings, 4 notes
-node tools/sim/regression.js      ->  173 checks, 25 scenarios, 0 failures
+node tools/sim/regression.js      ->  179 checks, 28 scenarios, 0 failures
 node tools/sim/vertical-slice.js  ->  PASSED end to end
 node tools/verify_assets.js       ->  44 references, 0 resolvable (assets absent)
 ```
@@ -95,6 +96,9 @@ node tools/verify_assets.js       ->  44 references, 0 resolvable (assets absent
 | Locked scenes are never autosaved into | pass |
 | All 25 Common Events terminate | pass |
 | No map leaves an Autorun running | pass |
+| NPC singleton across 700 (npc, day, block) combinations | pass |
+| Two different NPCs never share a cell | pass |
+| An inactive NPC instance holds no collision and shows no sprite | pass |
 
 ---
 
@@ -222,6 +226,28 @@ Taken literally, the lawn would have been painted as water.
 library's own `T.a2Kind` / `a3Kind` / `a4Kind`; grass now resolves to 2816,
 exactly as the sheet states.
 
+### D-12 — Every NPC in a room stands on the same tile — **Critical**
+
+`19_NPC_Map_Instances` gives one anchor coordinate per **room**, not per
+**(npc, room)**. Every NPC scheduled into a room therefore occupies the identical
+cell. Across ten days and five blocks that is **90 (day, block, cell) occurrences
+where two or three different people stand on one tile** — on the upper floor at
+night, three at once.
+
+Two blocking events on one cell do not merge: both exist, one is drawn over the
+other, the cell is blocked, and the player can only ever talk to whichever has
+the lower event id. The other person is in the room but unreachable.
+
+**Resolution:** `spreadAnchors()` keeps the first instance on the blueprint
+anchor and moves the rest to the nearest free floor cell **in the same room**,
+skipping furniture, door corridors, reserved interactive cells and cells already
+taken. Deterministic, so coordinates are stable across rebuilds. 23 anchors were
+spread on MAP_020. Verified: 0 shared cells across all 50 day/block states.
+
+A related implementation defect was caught by the same test: a hand-written
+Roland placeholder had only an active page, so it blocked its cell and showed its
+sprite regardless of the schedule. It is superseded by the generated instance.
+
 ---
 
 ## Defects in the tests, not the game
@@ -248,7 +274,7 @@ Honest list of what is stubbed rather than implemented.
 
 | Area | State |
 |---|---|
-| CE_009 NPC schedules | structure and singleton discipline in place; the per-NPC schedule branches for all 59 instances are not generated |
+| CE_009 NPC schedules | **generated** for all 14 NPCs and 59 instances, singleton proven. Only MAP_020's 36 instances are placed as events; the other 23 await their maps |
 | CE_013 present evidence, CE_014 relationships | structure and clean exits; branch trees not generated |
 | CE_016 mandatory events, CE_017 repeat dialogue | fall through safely; dependency graph not generated |
 | CE_019–CE_022 quality rules | clamp correctly to 0..3 and always resolve; the scoring rules themselves are not generated |

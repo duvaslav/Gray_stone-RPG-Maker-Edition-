@@ -462,6 +462,70 @@ function main() {
     check("autosave happens once unlocked", g.autosaves > before);
   });
 
+  // ------------------------------------------------------- NPC SINGLETON
+  scenario("NPC singleton: at most one visible instance per NPC, every day and block", () => {
+    const npcs = [...new Set(Object.keys(S).filter((n) => /^S_1\d+_NPCInst_/.test(n))
+      .map((n) => n.match(/NPCInst_(.+?)_/)[1]))];
+    check("instance switches were generated", npcs.length > 0, `${npcs.length} NPCs`);
+    let worst = 0, offenders = [];
+    let combos = 0;
+    for (let day = 1; day <= 10; day++) {
+      for (let block = 1; block <= 5; block++) {
+        const g = newGame(db, 1000 + day * 10 + block);
+        g.variables.setValue(V.V_0001_Current_Day, day);
+        g.variables.setValue(V.V_0004_Time_Block, block);
+        callCommonEvent(g, 9);
+        for (const npc of npcs) {
+          combos++;
+          const on = Object.keys(S).filter((n) => n.includes(`NPCInst_${npc}_`) && g.switches.value(S[n]));
+          if (on.length > 1) {
+            worst = Math.max(worst, on.length);
+            if (offenders.length < 5) offenders.push(`${npc} d${day}b${block}: ${on.length}`);
+          }
+        }
+      }
+    }
+    eq("combinations checked", combos, npcs.length * 50);
+    check("no NPC is ever visible in two places at once", worst <= 1, offenders.join("; "));
+  });
+
+  scenario("NPC placement: two different NPCs never share a cell", () => {
+    let collisions = [];
+    for (let day = 1; day <= 10; day++) {
+      for (let block = 1; block <= 5; block++) {
+        const g = newGame(db, 2000 + day * 10 + block);
+        g.variables.setValue(V.V_0001_Current_Day, day);
+        g.variables.setValue(V.V_0004_Time_Block, block);
+        callCommonEvent(g, 9);
+        const cells = {};
+        for (const ev of db.maps[20].events) {
+          if (!ev || !/^EV_NPC_/.test(ev.name)) continue;
+          const pi = findProperPageIndex(g, 20, ev);
+          if (pi < 1) continue;                  // page 1 is the inactive state
+          const k = `${ev.x},${ev.y}`;
+          (cells[k] = cells[k] || []).push(ev.name);
+        }
+        for (const [k, v] of Object.entries(cells)) {
+          if (v.length > 1 && collisions.length < 5) collisions.push(`d${day}b${block} ${k}: ${v.join(" + ")}`);
+        }
+      }
+    }
+    check("no cell holds two active NPCs", collisions.length === 0, collisions.join("; "));
+  });
+
+  scenario("NPC instances: an inactive instance holds no collision", () => {
+    const g = newGame(db, 3001);
+    let blocking = 0, visible = 0;
+    for (const ev of db.maps[20].events) {
+      if (!ev || !/^EV_NPC_/.test(ev.name)) continue;
+      const pg = ev.pages[0];                    // the inactive page
+      if (pg.priorityType === 1 && !pg.through) blocking++;
+      if (pg.image.characterName) visible++;
+    }
+    eq("no inactive instance blocks its cell", blocking, 0);
+    eq("no inactive instance shows a sprite", visible, 0);
+  });
+
   // ----------------------------------------------------- INTERPRETER SAFETY
   scenario("Every Common Event terminates from a cold start", () => {
     for (let id = 1; id <= 25; id++) {

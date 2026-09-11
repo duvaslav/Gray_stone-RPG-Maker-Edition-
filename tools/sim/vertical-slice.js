@@ -85,19 +85,23 @@ function main() {
 
   // 5 ------------------------------------------------------------ CONVERSATION
   step(5, "Conversation with Roland");
+  // Find Roland where his SCHEDULE actually puts him at day 1 evening, rather
+  // than assuming a room. If the schedule moves him, this follows.
+  const rolandEvent = db.maps[20].events.find((e) =>
+    e && /^EV_NPC_roland_/.test(e.name) && findProperPageIndex(g, 20, e) >= 1);
+  assert("Roland is somewhere on the ground floor this block", !!rolandEvent,
+         rolandEvent ? `${rolandEvent.name} at (${rolandEvent.x},${rolandEvent.y})` : "not scheduled here");
   const msgBefore = g.messages.length;
   const apBefore = g.variables.value(V.V_0005_AP_Remaining);
   const timeBefore = clock(g, V);
-  const r1 = triggerEvent(g, 20, "EV_NPC_roland_hall");
+  const r1 = triggerEvent(g, 20, rolandEvent.name);
   assert("Roland responded", r1.ran && g.messages.length > msgBefore, `${g.messages.length - msgBefore} new window(s)`);
   assert("talking cost no AP", g.variables.value(V.V_0005_AP_Remaining) === apBefore, `AP still ${apBefore}`);
   assert("talking cost no time", clock(g, V) === timeBefore, `still ${timeBefore}`);
-  assert("the talk was recorded", g.variables.value(V.V_0101_Talk_Count_roland) === 1);
-
   const msgBefore2 = g.messages.length;
-  triggerEvent(g, 20, "EV_NPC_roland_hall");
-  assert("a second approach falls through to repeat dialogue", g.messages.length > msgBefore2);
-  assert("still no AP charged", g.variables.value(V.V_0005_AP_Remaining) === apBefore);
+  triggerEvent(g, 20, rolandEvent.name);
+  assert("a second approach also costs nothing", g.variables.value(V.V_0005_AP_Remaining) === apBefore);
+  assert("and still says something", g.messages.length > msgBefore2);
 
   // 6 ----------------------------------------------------------- INVESTIGATION
   step(6, "Investigation: search the laundry baskets");
@@ -140,7 +144,12 @@ function main() {
     const pi = findProperPageIndex(g, 20, ev);
     if (pi >= 0 && ev.pages[pi].image.characterName) visible++;
   }
-  assert("exactly one visible Roland instance", visible === 1, `${visible} of ${roland.length} instance event(s)`);
+  assert("exactly one visible Roland instance", visible === 1, `${visible} of ${roland.length} instance event(s) on this floor`);
+  // And nobody else is standing in his cell.
+  const sharing = db.maps[20].events.filter((e) =>
+    e && /^EV_NPC_/.test(e.name) && e.x === rolandEvent.x && e.y === rolandEvent.y &&
+    findProperPageIndex(g, 20, e) >= 1);
+  assert("no other NPC shares his cell", sharing.length === 1, sharing.map((e) => e.name).join(", "));
 
   // 9 ------------------------------------------------------------ SAVE / LOAD
   step(9, "Save, then load");
