@@ -8,21 +8,72 @@
     "  variables 31-40  free: the registry runs 1-30 then jumps to 100"
   ],
   "switches": {
-    "14": { "name": "S_0014_Day_End_Available", "why": "CE_008 sets/clears it; never allocated in 04_Switches" },
-    "15": { "name": "S_0015_Atomic_Scene", "why": "CE_008/CE_024 test 'Atomic_Scene=OFF'; guards AP+time+clue mutation against re-entry" },
-    "16": { "name": "S_0016_Culprit_Version_Ready", "why": "CE_002 'set version-ready switch allocated by project'" },
-    "20": { "name": "S_0020_Version_Linda", "why": "CE_002 per-culprit version switch (Culprit_ID=1)" },
-    "21": { "name": "S_0021_Version_Celeste", "why": "CE_002 per-culprit version switch (Culprit_ID=2)" },
-    "22": { "name": "S_0022_Version_Vera", "why": "CE_002 per-culprit version switch (Culprit_ID=3)" },
-    "23": { "name": "S_0023_Version_Beatrice", "why": "CE_002 per-culprit version switch (Culprit_ID=4)" },
-    "24": { "name": "S_0024_Version_Nika", "why": "CE_002 per-culprit version switch (Culprit_ID=5)" },
-    "25": { "name": "S_0025_Version_Agnes", "why": "CE_002 per-culprit version switch (Culprit_ID=6)" }
+    "14": {
+      "name": "S_0014_Day_End_Available",
+      "why": "CE_008 sets/clears it; never allocated in 04_Switches"
+    },
+    "15": {
+      "name": "S_0015_Atomic_Scene",
+      "why": "CE_008/CE_024 test 'Atomic_Scene=OFF'; guards AP+time+clue mutation against re-entry"
+    },
+    "16": {
+      "name": "S_0016_Culprit_Version_Ready",
+      "why": "CE_002 'set version-ready switch allocated by project'"
+    },
+    "20": {
+      "name": "S_0020_Version_Linda",
+      "why": "CE_002 per-culprit version switch (Culprit_ID=1)"
+    },
+    "21": {
+      "name": "S_0021_Version_Celeste",
+      "why": "CE_002 per-culprit version switch (Culprit_ID=2)"
+    },
+    "22": {
+      "name": "S_0022_Version_Vera",
+      "why": "CE_002 per-culprit version switch (Culprit_ID=3)"
+    },
+    "23": {
+      "name": "S_0023_Version_Beatrice",
+      "why": "CE_002 per-culprit version switch (Culprit_ID=4)"
+    },
+    "24": {
+      "name": "S_0024_Version_Nika",
+      "why": "CE_002 per-culprit version switch (Culprit_ID=5)"
+    },
+    "25": {
+      "name": "S_0025_Version_Agnes",
+      "why": "CE_002 per-culprit version switch (Culprit_ID=6)"
+    },
+    "17": {
+      "name": "S_0017_Map_Entry_Pending",
+      "why": "PAT_MAP_ENTER guard; GrayStone_Core re-arms it in Game_Map.setup so a load refreshes ambience exactly like a transfer"
+    }
   },
   "variables": {
-    "31": { "name": "V_0031_Temp_Old_Block", "init": 0, "why": "CE_006 'Control Variable Temp_Old_Block=V4'; never allocated" },
-    "32": { "name": "V_0032_Temp_Total_Minutes", "init": 0, "why": "CE_006 time-block derivation in absolute minutes" },
-    "33": { "name": "V_0033_Checkpoint_Reason", "init": 0, "why": "CE_023 'Control Variable Checkpoint_Reason=<caller value>'" },
-    "34": { "name": "V_0034_Temp_Scratch_A", "init": 0, "why": "general build-time scratch for generated branch trees" },
-    "35": { "name": "V_0035_Temp_Instance_Count", "init": 0, "why": "NPC singleton assertion counter (CE_009)" }
+    "31": {
+      "name": "V_0031_Temp_Old_Block",
+      "init": 0,
+      "why": "CE_006 'Control Variable Temp_Old_Block=V4'; never allocated"
+    },
+    "32": {
+      "name": "V_0032_Temp_Total_Minutes",
+      "init": 0,
+      "why": "CE_006 time-block derivation in absolute minutes"
+    },
+    "33": {
+      "name": "V_0033_Checkpoint_Reason",
+      "init": 0,
+      "why": "CE_023 'Control Variable Checkpoint_Reason=<caller value>'"
+    },
+    "34": {
+      "name": "V_0034_Temp_Scratch_A",
+      "init": 0,
+      "why": "general build-time scratch for generated branch trees"
+    },
+    "35": {
+      "name": "V_0035_Temp_Instance_Count",
+      "init": 0,
+      "why": "NPC singleton assertion counter (CE_009)"
+    }
   }
 }

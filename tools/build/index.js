@@ -8,6 +8,9 @@ const ces = require("./10-common-events");
 const registry = require("../lib/registry");
 const map005 = require("./20-map005-prologue");
 const map005ev = require("./21-map005-events");
+const map020 = require("./30-map020-ground");
+const map020furnish = require("./31-map020-furnish");
+const map020ev = require("./32-map020-events");
 const tiles = require("../lib/tiles");
 
 const ROOT = path.join(__dirname, "..", "..");
@@ -145,6 +148,31 @@ function main() {
     write("Map005.json", map.toJSON());
     registerMap(5, "MAP_005_Prologue_Front_Drive", 0, 1);
     console.log(`  Map005    ${map.width}x${map.height}, ${map.events.length - 1} events, collision matches blueprint`);
+  }
+
+  {
+    const ctx = map020.build();
+    const evb = map020ev.build(reg, ctx);
+    // Interactive furniture is an event, so the map must not also paint a tile
+    // in that cell -- one object per cell, never a tile and an event disagreeing.
+    ctx.reserved = evb.reserved;
+    const fres = map020furnish.furnish(ctx);
+    for (const ev of evb.events) ctx.map.addEvent(ev);
+
+    const flags = flagsFor(map020.TILESET_ID);
+    const reach = ctx.map.reachable(22, 31, flags);
+    const K = (x, y) => y * ctx.map.width + x;
+    const dead = [];
+    for (const [k, room] of Object.entries(ctx.floorOf)) {
+      const [x, y] = k.split(",").map(Number);
+      if (reach.has(K(x, y))) continue;
+      if (ctx.map.isWalkable(x, y, flags)) dead.push(`${k} [${room}]`);
+    }
+    if (dead.length) throw new Error(`MAP_020 has ${dead.length} walkable but unreachable cells: ${dead.slice(0, 10).join(", ")}`);
+
+    write("Map020.json", ctx.map.toJSON());
+    registerMap(20, "MAP_020_Manor_Ground_Floor", 0, 2);
+    console.log(`  Map020    ${ctx.map.width}x${ctx.map.height}, ${evb.events.length} events, ${fres.placed.length} furnishings, ${reach.size} reachable cells, 0 dead cells`);
   }
 
   write("MapInfos.json", mapInfos);
