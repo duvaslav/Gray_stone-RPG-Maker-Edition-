@@ -1,0 +1,211 @@
+[
+[
+"requirement_id",
+"требуемый файл или папка",
+"зачем нужен",
+"какие листы нельзя подтвердить",
+"какие поля останутся предположениями",
+"допустимый формат",
+"обязательность",
+"статус",
+"примечание"
+],
+[
+"REQ-001",
+"game.rmmzproject",
+"Подтвердить тип/версию проекта и открыть editor project.",
+"01,43,44",
+"engine version; project path",
+"Оригинальный файл",
+"Обязательно",
+"Missing",
+"Не найден в Drive"
+],
+[
+"REQ-002",
+"data/System.json",
+"Системные настройки, start map, autosave/menu/save options, asset names.",
+"01,34,36,43",
+"System IDs/options",
+"JSON",
+"Обязательно",
+"Missing",
+""
+],
+[
+"REQ-003",
+"data/MapInfos.json",
+"Подтвердить Map IDs, names, parent hierarchy.",
+"07,09,12,13",
+"verified map IDs",
+"JSON",
+"Обязательно",
+"Missing",
+""
+],
+[
+"REQ-004",
+"data/MapXXX.json (все)",
+"Проверить dimensions, event IDs/pages/commands, passability spawn coordinates.",
+"07–13,18,19,24,27,31–33,43",
+"verified event/page IDs; coordinates; commands",
+"JSON files",
+"Обязательно",
+"Missing",
+""
+],
+[
+"REQ-005",
+"data/CommonEvents.json",
+"Проверить реальные Common Event IDs/command lists/triggers.",
+"06,36,37,43",
+"implementation/runtime status",
+"JSON",
+"Обязательно",
+"Missing",
+""
+],
+[
+"REQ-006",
+"data/Items.json",
+"Проверить Key Item IDs/icons/one-time evidence mapping.",
+"23–25,43",
+"verified item/icon IDs",
+"JSON",
+"Обязательно",
+"Missing",
+""
+],
+[
+"REQ-007",
+"data/Tilesets.json",
+"Проверить tileset IDs, flags, passage and map assignments.",
+"07,08,10,43",
+"exact tileset/passability",
+"JSON",
+"Обязательно",
+"Missing",
+""
+],
+[
+"REQ-008",
+"data/Actors.json",
+"Проверить actor/face conditions и player actor.",
+"13,16,17,34",
+"actor IDs/graphics",
+"JSON",
+"Желательно",
+"Missing",
+""
+],
+[
+"REQ-009",
+"data/Animations.json; data/States.json",
+"Проверить упомянутые animations/states.",
+"27,33,43",
+"exact animation/state IDs",
+"JSON",
+"По использованию",
+"Missing",
+""
+],
+[
+"REQ-010",
+"js/plugins.js",
+"Инвентарь enabled plugins, order и parameters.",
+"35,36,43",
+"plugin/version/commands",
+"JavaScript",
+"Обязательно",
+"Missing",
+""
+],
+[
+"REQ-011",
+"js/rmmz_core.js; rmmz_managers.js; rmmz_objects.js; rmmz_scenes.js; rmmz_sprites.js; rmmz_windows.js",
+"Проверить фактическую версию core API и совместимость Script.",
+"01,06,35–37",
+"API compatibility",
+"JavaScript",
+"Обязательно",
+"Missing",
+""
+],
+[
+"REQ-012",
+"img/characters",
+"Проверить NPC sprites и indices.",
+"16,17,19",
+"exact sprite/index",
+"Папка PNG",
+"Обязательно",
+"Missing",
+""
+],
+[
+"REQ-013",
+"img/faces",
+"Проверить face files/indices.",
+"16,17,20–22",
+"exact face/index",
+"Папка PNG",
+"Обязательно",
+"Missing",
+""
+],
+[
+"REQ-014",
+"img/tilesets; img/system; img/pictures",
+"Проверить карты, icons, optional pictures/UI.",
+"10,23,33,34,43",
+"exact filenames/indices",
+"Папки PNG",
+"Обязательно",
+"Missing",
+""
+],
+[
+"REQ-015",
+"audio/bgm; audio/bgs; audio/me; audio/se",
+"Составить реальный inventory и связать 39 semantic slots с файлами.",
+"29–32,42,43",
+"exact_file; duration; loop",
+"Папки OGG/M4A",
+"Обязательно",
+"Missing",
+"0 из 39 files verified"
+],
+[
+"REQ-016",
+"Сохранения из текущей/предыдущей Schema_Version",
+"Спроектировать и тестировать migration/load replay.",
+"36,41",
+"migration evidence",
+"save files из desktop/browser",
+"Для migration",
+"Missing",
+""
+],
+[
+"REQ-017",
+"Deployment targets/config",
+"Проверить desktop/browser storage/autosave и output.",
+"36,39,43,44",
+"browser/desktop result",
+"Windows/macOS/web build",
+"Перед release",
+"Missing",
+""
+],
+[
+"REQ-018",
+"Runtime test evidence (logs/screenshots/build hash)",
+"Разрешить runtime_status=Passed.",
+"39–43,46,52",
+"runtime result/evidence",
+"Log, video, build hash",
+"Перед Passed",
+"Missing",
+""
+]
+]

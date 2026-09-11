@@ -1,0 +1,189 @@
+[
+[
+"gate_id",
+"критерий",
+"способ проверки",
+"необходимые данные",
+"текущий результат",
+"блокирующие findings",
+"status",
+"owner",
+"примечание"
+],
+[
+"G-001",
+"source crosswalk complete",
+"COUNTA source rows=1091; decision enum; duplicate target review",
+"45_Source_Crosswalk",
+"1091/1091; Merge reclassified",
+"",
+"Passed",
+"Technical Audit",
+"Static only"
+],
+[
+"G-002",
+"no broken IDs",
+"Duplicate checks + target existence",
+"Registries; later project JSON",
+"Static registry duplicate count=0; project references unavailable",
+"F-002",
+"Blocked",
+"Technical Audit",
+"Project read required for final pass"
+],
+[
+"G-003",
+"no unsupported pseudo-command marked feasible",
+"49_Command_Feasibility: every pseudo operation has exact mechanism or BLOCKED",
+"83 classified rows",
+"83/83 classified; blocked operations not marked Feasible",
+"",
+"Passed",
+"Technical Audit",
+"Specification gate"
+],
+[
+"G-004",
+"all transfers valid",
+"Map existence; bounds; reciprocal link; project passability",
+"07,09,MapXXX.json",
+"74/74 static checks passed; passability unknown",
+"F-002,F-017",
+"Blocked",
+"Map Design",
+"Runtime/project gate"
+],
+[
+"G-005",
+"all event pages ordered",
+"Condition support; highest-page winner; unreachable/shadow scan",
+"13 + MapXXX.json",
+"698 rows documented; 184 require generated/precomputed conditions",
+"F-002,F-007,F-009",
+"Blocked",
+"Event Design",
+""
+],
+[
+"G-006",
+"all Common Events executable",
+"Exact commands or explicit blocker; JSON parse/runtime",
+"06 + CommonEvents.json",
+"21 exact specifications; 4 build-time/project blockers",
+"F-002,F-006",
+"Blocked",
+"Technical Design",
+""
+],
+[
+"G-007",
+"NPC singleton check",
+"For each NPC/day/block count active instances=0 or 1",
+"18,19,generated switches,MapXXX",
+"Architecture selected; not generated/tested",
+"F-002,F-010",
+"Blocked",
+"NPC Systems",
+""
+],
+[
+"G-008",
+"repeat dialogue implementation selected",
+"Architecture and fallback recorded",
+"21,22,28,06",
+"Passed: A vertical slice + B full-game build-time",
+"",
+"Passed",
+"Dialogue Systems",
+"Not runtime passed"
+],
+[
+"G-009",
+"audio files verified",
+"Inventory folder and exact_file exists/channel match",
+"audio/* project folders",
+"0/39 files verified; 374 cues blocked",
+"F-002,F-018",
+"Blocked",
+"Audio",
+""
+],
+[
+"G-010",
+"all culprit routes resolve",
+"Matrix completeness and CE022 generated/run",
+"37,38,project",
+"78/78 static matrix results; resolver not generated/run",
+"F-002,F-012",
+"Blocked",
+"Narrative Systems",
+""
+],
+[
+"G-011",
+"save/load tested",
+"Autosave/manual/load/checkpoint/migration tests in desktop and browser",
+"Project + deployments + saves",
+"0 tests passed",
+"F-002,F-004,F-013",
+"Blocked",
+"QA",
+""
+],
+[
+"G-012",
+"no Critical findings",
+"COUNTIFS severity Critical and unresolved",
+"48_Audit_Findings",
+"5 Critical total; project/runtime blockers remain",
+"F-002,F-004,F-005",
+"Blocked",
+"Technical Audit",
+""
+],
+[
+"G-013",
+"no High findings",
+"COUNTIFS severity High and unresolved",
+"48_Audit_Findings",
+"11 High total; several implementation blockers remain",
+"F-006:F-016",
+"Blocked",
+"Technical Audit",
+""
+],
+[
+"G-014",
+"vertical slice built",
+"Build all steps and attach evidence",
+"43 + project",
+"Not built",
+"F-002,F-016",
+"Blocked",
+"Implementation",
+""
+],
+[
+"G-015",
+"vertical slice runtime passed",
+"Run New Game→day→clue→dialogues→save/load",
+"Executable build",
+"0 passed",
+"F-002,F-016",
+"Blocked",
+"QA",
+""
+],
+[
+"G-016",
+"full runtime QA passed",
+"All routes/platforms and regression suite",
+"Release candidate",
+"0 passed",
+"F-002",
+"Blocked",
+"QA",
+""
+]
+]

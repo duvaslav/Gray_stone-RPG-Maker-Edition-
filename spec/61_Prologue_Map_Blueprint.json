@@ -1,0 +1,672 @@
+[
+[
+"map_key",
+"section",
+"key_or_y",
+"value_1",
+"value_2",
+"value_3",
+"value_4",
+"notes"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"METADATA",
+"rm_map_id",
+"5.0",
+"width=32",
+"height=24",
+"tileset_id=2",
+"Dedicated non-explorable cinematic map; display name OFF"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"METADATA",
+"tileset",
+"Outside",
+"scroll_type=0",
+"encounter_step=30",
+"parallax=None",
+"Use standard RPG Maker MZ NewData only"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"METADATA",
+"camera_anchor",
+"x=16",
+"y=18",
+"player_transparent=ON",
+"initial_direction=UP",
+"Initial viewport shows lower drive; Scroll Map UP 5 reveals manor"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"METADATA",
+"transfer_out",
+"MAP_020_Manor_Ground_Floor",
+"x=22",
+"y=31",
+"direction=UP",
+"Transfer occurs under black screen after title card"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"PALETTE",
+"G",
+"Outside grass autotile",
+"walkable",
+"ground layer",
+"collision=0",
+"Continuous lawn"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"PALETTE",
+"P",
+"Outside dirt/gravel autotile",
+"walkable",
+"ground layer",
+"collision=0",
+"Drive and turning circle"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"PALETTE",
+"S",
+"Outside stone/paved tile",
+"walkable",
+"ground layer",
+"collision=0",
+"Porch and steps"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"PALETTE",
+"F",
+"Outside flowerbed tile",
+"blocked",
+"ground/object composition",
+"collision=1",
+"Two formal flowerbeds"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"PALETTE",
+"R",
+"Outside mansion roof autotile",
+"blocked",
+"structure layer",
+"collision=1",
+"Top façade roof"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"PALETTE",
+"W",
+"Outside mansion wall autotile",
+"blocked",
+"structure layer",
+"collision=1",
+"Main façade"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"PALETTE",
+"w",
+"Outside window tile",
+"blocked",
+"structure overlay",
+"collision inherited",
+"Four façade windows"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"PALETTE",
+"D",
+"Door opening; event !Door1 index 0 overlays cell",
+"walkable during route",
+"structure/event",
+"collision=0",
+"Controller opens door before transfer"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"PALETTE",
+"H",
+"Outside hedge tile",
+"blocked",
+"structure layer",
+"collision=1",
+"Formal hedge"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"PALETTE",
+"T",
+"Outside tree tile",
+"blocked",
+"structure layer",
+"collision=1",
+"Boundary framing"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"PALETTE",
+"L",
+"Outside lamp decoration",
+"blocked",
+"decoration layer",
+"collision=1",
+"Four lamps"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"PALETTE",
+"#",
+"Boundary hedge/tree wall",
+"blocked",
+"structure layer",
+"collision=1",
+"Prevents leaving cinematic frame"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"PALETTE",
+".",
+"No tile on this upper layer",
+"inherit",
+"upper layers",
+"collision inherited",
+"Transparent upper layer"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"GRID",
+"0.0",
+"GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+"#....RRRRRRRRRRRRRRRRRRRRRR....#",
+"................................",
+"10000111111111111111111111100001",
+"Each row is exactly 32 cells; x=0..31"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"GRID",
+"1.0",
+"GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+"#....RRRRRRRRRRRRRRRRRRRRRR....#",
+"................................",
+"10000111111111111111111111100001",
+"Each row is exactly 32 cells; x=0..31"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"GRID",
+"2.0",
+"GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+"#....RRRRRRRRRRRRRRRRRRRRRR....#",
+"................................",
+"10000111111111111111111111100001",
+"Each row is exactly 32 cells; x=0..31"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"GRID",
+"3.0",
+"GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+"#.....WWWWWWWWWWWWWWWWWWWW.....#",
+"................................",
+"10000011111111111111111111000001",
+"Each row is exactly 32 cells; x=0..31"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"GRID",
+"4.0",
+"GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+"#..T..WWWWWWWWWWWWWWWWWWWW..T..#",
+"................................",
+"10010011111111111111111111001001",
+"Each row is exactly 32 cells; x=0..31"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"GRID",
+"5.0",
+"GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+"#.....WWWwWWwWWWWWWwWWwWWW.....#",
+"................................",
+"10000011111111111111111111000001",
+"Each row is exactly 32 cells; x=0..31"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"GRID",
+"6.0",
+"GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+"#.....WWWWWWWWWWWWWWWWWWWW.....#",
+"................................",
+"10000011111111111111111111000001",
+"Each row is exactly 32 cells; x=0..31"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"GRID",
+"7.0",
+"GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+"#.....WWWWWWWWWDDWWWWWWWWW.....#",
+"................................",
+"10000011111111100111111111000001",
+"Each row is exactly 32 cells; x=0..31"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"GRID",
+"8.0",
+"GGGGGGGGGGGSSSSSSSSSSGGGGGGGGGGG",
+"#..............................#",
+"................................",
+"10000000000000000000000000000001",
+"Each row is exactly 32 cells; x=0..31"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"GRID",
+"9.0",
+"GGGGGGGGGGGSSSSSSSSSSGGGGGGGGGGG",
+"#..T...HHHH..........HHHH...T..#",
+"................................",
+"10010001111000000000011110001001",
+"Each row is exactly 32 cells; x=0..31"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"GRID",
+"10.0",
+"GGGGGGGFFFFSSSSSSSSSSFFFFGGGGGGG",
+"#..............................#",
+"................................",
+"10000001111000000000011110000001",
+"Each row is exactly 32 cells; x=0..31"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"GRID",
+"11.0",
+"GGGGGGGFFFFGGGPPPPPGGFFFFGGGGGGG",
+"#..............................#",
+"................................",
+"10000001111000000000011110000001",
+"Each row is exactly 32 cells; x=0..31"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"GRID",
+"12.0",
+"GGGGGGGGGGGGGGPPPPPGGGGGGGGGGGGG",
+"#..............................#",
+"..........L..........L..........",
+"10000000001000000000010000000001",
+"Each row is exactly 32 cells; x=0..31"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"GRID",
+"13.0",
+"GGGGGGGGGGGPPPPPPPPPPPGGGGGGGGGG",
+"#..............................#",
+"................................",
+"10000000000000000000000000000001",
+"Each row is exactly 32 cells; x=0..31"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"GRID",
+"14.0",
+"GGGGGGGGGPPPPPPPPPPPPPPPGGGGGGGG",
+"#..............................#",
+"................................",
+"10000000000000000000000000000001",
+"Each row is exactly 32 cells; x=0..31"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"GRID",
+"15.0",
+"GGGGGGGPPPPGGPPPPPPPGGPPPPGGGGGG",
+"#..T........................T..#",
+"................................",
+"10010000000000000000000000001001",
+"Each row is exactly 32 cells; x=0..31"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"GRID",
+"16.0",
+"GGGGGGPPPGGGGPPPPPPPGGGGPPPGGGGG",
+"#..............................#",
+"................................",
+"10000000000000000000000000000001",
+"Each row is exactly 32 cells; x=0..31"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"GRID",
+"17.0",
+"GGGGGGPPPGGGGPPPPPPPGGGGPPPGGGGG",
+"#..............................#",
+"................................",
+"10000000000000000000000000000001",
+"Each row is exactly 32 cells; x=0..31"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"GRID",
+"18.0",
+"GGGGGGPPPGGGPPPPPPPPPGGGPPPGGGGG",
+"#..............................#",
+".........L............L.........",
+"10000000010000000000001000000001",
+"Each row is exactly 32 cells; x=0..31"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"GRID",
+"19.0",
+"GGGGGGGPPPPGPPPPPPPPPGPPPPGGGGGG",
+"#..............................#",
+"................................",
+"10000000000000000000000000000001",
+"Each row is exactly 32 cells; x=0..31"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"GRID",
+"20.0",
+"GGGGGGGGGPPPPPPPPPPPPPPPGGGGGGGG",
+"#..T........................T..#",
+"................................",
+"10010000000000000000000000001001",
+"Each row is exactly 32 cells; x=0..31"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"GRID",
+"21.0",
+"GGGGGGGGGGGPPPPPPPPPPPGGGGGGGGGG",
+"#..............................#",
+"................................",
+"10000000000000000000000000000001",
+"Each row is exactly 32 cells; x=0..31"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"GRID",
+"22.0",
+"GGGGGGGGGGGGPPPPPPPPPGGGGGGGGGGG",
+"#..............................#",
+"................................",
+"10000000000000000000000000000001",
+"Each row is exactly 32 cells; x=0..31"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"GRID",
+"23.0",
+"GGGGGGGGGGGGPPPPPPPPPGGGGGGGGGGG",
+"################################",
+"................................",
+"11111111111111111111111111111111",
+"Each row is exactly 32 cells; x=0..31"
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"ZONE",
+"PR_ZONE_LOWER_DRIVE",
+"x=12..20",
+"y=18..23",
+"tiles=G+P",
+"camera_anchor=(16,18)",
+"Стартовый кадр: узкая гравийная аллея; Леонард начинает в (16,22); края закрыты деревьями/изгородью."
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"ZONE",
+"PR_ZONE_TURNING_CIRCLE",
+"x=7..25",
+"y=11..18",
+"tiles=P+G+L",
+"Roland=(16,11)",
+"Парадный разворот и основная зона встречи; центральный маршрут шириной не менее 5 клеток."
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"ZONE",
+"PR_ZONE_PORCH",
+"x=11..20",
+"y=8..12",
+"tiles=S+F+H",
+"cast_y=9..11",
+"Крыльцо, клумбы и строй прислуги; центральная ось двери должна оставаться свободной."
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"ZONE",
+"PR_ZONE_FACADE",
+"x=6..25",
+"y=0..8",
+"tiles=R+W+w+D",
+"door=(16,7)",
+"Фасад раскрывается камерой последним; крыша и стены непроходимы, дверь реализуется событием."
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"COMPOSITION",
+"center_axis",
+"x=16",
+"drive→Roland→door",
+"symmetry=controlled",
+"edge_frame=T/H/#",
+"Главная вертикальная ось кадра; декор по краям можно слегка асимметризировать, маршрут — нет."
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"COMPOSITION",
+"negative_space",
+"x=14..18",
+"y=10..22",
+"no_blocking_decor",
+"min_width=5",
+"Оставить свободное пространство для маршрутов Леонарда, Роланда и камеры."
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"LAYER_RULE",
+"layer_0_ground",
+"G,P,S; F uses P base",
+"Outside_A2",
+"autotiles",
+"passable=O",
+"Трава, гравий/земля и каменное мощение. Автотайл сам выбирает shape по соседям."
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"LAYER_RULE",
+"layer_1_structure",
+"R,W,H,T,#",
+"Outside_A3/A4 + Outside_B",
+"blocked=X",
+"upper canopy may be ☆",
+"Крыша/стены и физические препятствия. Ствол дерева X; крона может быть ☆ только над непроходимым основанием."
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"LAYER_RULE",
+"layer_2_detail",
+"w,flowers,L",
+"Outside_B",
+"overlay",
+"X or ☆ by object",
+"Окна, цветы и фонари. Не более двух верхних тайлов на одной клетке."
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"LAYER_RULE",
+"layer_3_effect",
+"lighting/fog/glow",
+"Event/Picture/Shadow Pen",
+"no collision",
+"visual only",
+"Не занимать тайлом: свет, дымка и затемнение создаются событиями, тонировкой и Shadow Pen."
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"PASSABILITY",
+"walkable",
+"G,P,S,D-underlay",
+"O",
+"all directions",
+"controller blocks control",
+"Карта не исследуется, но маршруты событий должны проходить без Through, кроме контроллера."
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"PASSABILITY",
+"blocked",
+"R,W,F,H,T,L,#",
+"X",
+"no entry",
+"boundary sealed",
+"Клумбы и фонари считаются физическими препятствиями; дверь открывает только событие EV_PR_DOOR."
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"CAMERA",
+"SHOT_01_ENTRY",
+"viewport center=(16,18)",
+"show y≈12..23",
+"black→fade",
+"0–20 sec",
+"Показывает нижнюю аллею; особняк скрыт верхней границей кадра."
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"CAMERA",
+"SHOT_02_APPROACH",
+"Scroll Map UP 5",
+"speed=3",
+"Leonard moves up",
+"20–55 sec",
+"Постепенно открывает парадный круг и силуэт дома."
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"CAMERA",
+"SHOT_03_ROLAND",
+"hold center axis",
+"focus y≈11..18",
+"dialogue",
+"55–100 sec",
+"Роланд и Леонард остаются в центральном коридоре; не использовать свободное слежение."
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"CAMERA",
+"SHOT_04_TABLEAU",
+"Scroll Map UP 2–3",
+"show y≈5..16",
+"servants reveal",
+"100–145 sec",
+"Открывает Марлену, служанок, крыльцо и большую часть фасада."
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"CAMERA",
+"SHOT_05_DOOR",
+"hold",
+"door route",
+"SE Door2",
+"145–165 sec",
+"Дверь открывается на центральной оси; перед титром оставить короткую паузу."
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"CAMERA",
+"SHOT_06_EXIT",
+"Fadeout Screen",
+"title card",
+"Transfer under black",
+"MAP_020 (22,31)",
+"Переход в интерьер только под полностью чёрным экраном."
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"LIGHTING",
+"dusk_initial",
+"tone R=-68",
+"G=-58",
+"B=-32",
+"Gray=34; duration=1",
+"Холодные поздние сумерки; тёплые окна должны контрастировать, но не освещать весь фасад."
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"LIGHTING",
+"door_open_shift",
+"tone R=-52",
+"G=-44",
+"B=-24",
+"Gray=24; duration=30",
+"Небольшое смягчение тона при открытии двери; не превращать сцену в дневную."
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"LIGHTING",
+"shadow_pen",
+"right/bottom façades",
+"under hedges/trees",
+"none on route",
+"no animated shadow",
+"Тени усиливают объём фасада, но не должны перекрывать лица и центральную дорожку."
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"TILE_REFERENCE",
+"palette_sheet",
+"68_Prologue_Tile_Palette",
+"symbols=G/P/S/F/R/W/w/D/H/T/L/#/.",
+"standard Outside",
+"Все источники, формулы Tile ID, проходимость и правила размещения вынесены в отдельный лист.",
+""
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"QA",
+"route_clearance",
+"Leonard (16,22)→Roland→door",
+"min width=5",
+"no X on route",
+"REQUIRED",
+"Проверить маршрут без Through после сборки карты."
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"QA",
+"camera_bounds",
+"32×24 at 816×624",
+"no blank edge",
+"all Scroll Map valid",
+"REQUIRED",
+"При стандартном экране видимая область ≈17×13 клеток; не показывать границы карты."
+],
+[
+"MAP_005_Prologue_Front_Drive",
+"QA",
+"standard_assets_only",
+"Outside_A2/A3/A4/A5/B",
+"!Door1",
+"Shadow Pen",
+"REQUIRED",
+"Пользовательские тайлы не нужны. Точные визуальные слоты B/A3 сверить в фактическом проекте."
+]
+]

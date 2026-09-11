@@ -1,0 +1,98 @@
+[
+[
+"check_id",
+"check",
+"expected",
+"actual",
+"status",
+"notes"
+],
+[
+"QA_DLG_001",
+"Canonical dialogue nodes converted",
+"137.0",
+"137.0",
+"PASS",
+""
+],
+[
+"QA_DLG_002",
+"Player choices converted",
+"63.0",
+"63.0",
+"PASS",
+""
+],
+[
+"QA_DLG_003",
+"Canonical text blocks generated",
+">0",
+"1704.0",
+"PASS",
+""
+],
+[
+"QA_DLG_004",
+"Show Text block line count",
+"<=4",
+"4.0",
+"PASS",
+""
+],
+[
+"QA_DLG_005",
+"Wrapped line character count",
+"<=40",
+"35.0",
+"PASS",
+"All generated Show Text lines are 35 characters or fewer after the final manual split."
+],
+[
+"QA_DLG_006",
+"All speaking characters have base asset binding",
+"0.0",
+"0.0",
+"PASS",
+"[]"
+],
+[
+"QA_DLG_007",
+"Base asset bindings ready",
+"17.0",
+"17.0",
+"PASS",
+""
+],
+[
+"QA_DLG_008",
+"Unwritten dialogue briefs generated",
+"212.0",
+"212.0",
+"PASS",
+""
+],
+[
+"QA_DLG_009",
+"Exact event command rows generated",
+">0",
+"2630.0",
+"PASS",
+""
+],
+[
+"QA_DLG_010",
+"Every canonical scene has terminal Exit Event Processing",
+"15.0",
+"15.0",
+"PASS",
+""
+],
+[
+"QA_DLG_011",
+"All Jump to Label targets exist",
+"0.0",
+"0.0",
+"PASS",
+"Conditional Route command CMD_scene_evelyn_audit_0248 resolves all five existing labels through native nested branches."
+]
+]

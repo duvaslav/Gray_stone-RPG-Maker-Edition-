@@ -1,0 +1,272 @@
+[
+[
+"check_id",
+"check",
+"expected",
+"actual",
+"status",
+"blocking",
+"notes"
+],
+[
+"PR_QA_001",
+"Canonical dialogue lines preserved",
+"4 source entries",
+"4 source entries split into 10 text blocks",
+"PASS",
+"Yes",
+"No new spoken dialogue added"
+],
+[
+"PR_QA_002",
+"Text window line count",
+"<=4",
+"max=4",
+"PASS",
+"Yes",
+""
+],
+[
+"PR_QA_003",
+"Text line length",
+"<=35 characters",
+"max=31",
+"PASS",
+"Yes",
+""
+],
+[
+"PR_QA_004",
+"Player choices",
+"0.0",
+"0.0",
+"PASS",
+"Yes",
+"Prologue is noninteractive"
+],
+[
+"PR_QA_005",
+"Input lock during scene",
+"Menu/save/formation disabled and Autorun active",
+"Specified in commands 011–016",
+"PASS",
+"Yes",
+""
+],
+[
+"PR_QA_006",
+"One-shot replay protection",
+"Global switch + Self Switch A",
+"Both specified before transfer",
+"PASS",
+"Yes",
+""
+],
+[
+"PR_QA_007",
+"Visual cast assets exist",
+"10 character bindings + door",
+"All verified in handoff inventories",
+"PASS",
+"Yes",
+""
+],
+[
+"PR_QA_008",
+"Dialogue face assets exist",
+"People1 indices 0 and 1",
+"Both verified",
+"PASS",
+"Yes",
+""
+],
+[
+"PR_QA_009",
+"BGM exists",
+"Theme4",
+"Verified in project System.json",
+"PASS",
+"Yes",
+""
+],
+[
+"PR_QA_010",
+"External assets used",
+"0.0",
+"0.0",
+"PASS",
+"Yes",
+""
+],
+[
+"PR_QA_011",
+"Movement routes in bounds",
+"All endpoints inside 32×24",
+"All 7 routes valid",
+"PASS",
+"Yes",
+""
+],
+[
+"PR_QA_012",
+"Movement route collisions",
+"No shared endpoint or blocked path",
+"Leonard (16,8); Roland (15,8); Marlena returns (14,10)",
+"PASS",
+"Yes",
+""
+],
+[
+"PR_QA_013",
+"Camera plan",
+"Initial lower drive then reveal manor",
+"Scroll Map UP 5 tiles",
+"PASS",
+"Yes",
+""
+],
+[
+"PR_QA_014",
+"Map grid dimensions",
+"24 rows × 32 cells per layer",
+"24 × 32",
+"PASS",
+"Yes",
+""
+],
+[
+"PR_QA_015",
+"Map collision border",
+"All outer cells blocked",
+"Specified in collision layer",
+"PASS",
+"Yes",
+""
+],
+[
+"PR_QA_016",
+"Door animation",
+"Standard !Door1 sequence",
+"Turn Left → Right → Up",
+"PASS",
+"Yes",
+""
+],
+[
+"PR_QA_017",
+"Time continuity",
+"Predusk arrival + 30 minutes",
+"17:30 → 18:00",
+"PASS",
+"Yes",
+"Day 1 source row corrected from 05:30"
+],
+[
+"PR_QA_018",
+"End transfer",
+"Exact map and coordinate",
+"MAP_020 (22,31), facing up",
+"PASS",
+"Yes",
+""
+],
+[
+"PR_QA_019",
+"Technical text shown to player",
+"None",
+"None",
+"PASS",
+"Yes",
+""
+],
+[
+"PR_QA_020",
+"Actual numeric tile IDs",
+"Deterministic binding from Tileset 2 at build time",
+"Geometry and semantic palette complete",
+"PASS_WITH_BINDING",
+"No",
+"No artistic/layout decision remains; builder reads project Tilesets.json"
+],
+[
+"PR_QA_021",
+"Runtime test",
+"Required after JSON generation",
+"Not run from spreadsheet",
+"NOT_RUN",
+"No",
+"Table is production-ready; runtime belongs to project implementation pass"
+],
+[
+"PR_QA_022",
+"Exact RPG Maker MZ parameter arrays",
+"105 command rows",
+"105 arrays in column O",
+"PASS",
+"Yes",
+"All command IDs, switch IDs, variable IDs, map ID, event IDs and movement-route objects resolved"
+],
+[
+"PR_QA_023",
+"Switch registry references",
+"All prologue switches registered",
+"S_0012 and S_0013 added; S_0100 and S_0004–0005 reused",
+"PASS",
+"Yes",
+"No duplicate day or lock switches created"
+],
+[
+"PR_QA_024",
+"Variable registry references",
+"All clock variables registered",
+"V_0001–V_0004 reused",
+"PASS",
+"Yes",
+"Control returns at day 1, 18:00, Time_Block 4"
+],
+[
+"PR_QA_025",
+"Continuous BGS file exists",
+"Wind2",
+"Standard NewData manifest match",
+"PASS",
+"Yes",
+"Play BGS code 245; Fadeout BGS code 246"
+],
+[
+"PR_QA_026",
+"One-shot audio files exist",
+"Horse; Sand; Crow; Door2; Mystery",
+"All found in standard NewData manifest",
+"PASS",
+"Yes",
+"No external audio is referenced"
+],
+[
+"PR_QA_027",
+"Footsteps are synchronized with movement",
+"Native move-route Play SE commands",
+"Sand embedded in 6 walking routes via move code 44",
+"PASS",
+"Yes",
+"No parallel-event audio loop required"
+],
+[
+"PR_QA_028",
+"Exterior audio is cleaned before transfer",
+"BGS and BGM fade before MAP_020",
+"Both fade for 2 seconds; map autoplay audio disabled",
+"PASS",
+"Yes",
+"Prevents wind or duplicate Theme4 on destination map"
+],
+[
+"PR_QA_029",
+"Chapter-title accent",
+"Mystery ME after fadeout",
+"Play ME code 249 immediately before PR_TXT_011",
+"PASS",
+"No",
+"Runtime volume balance still requires listening test"
+]
+]

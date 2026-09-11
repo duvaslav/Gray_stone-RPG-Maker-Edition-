@@ -1,0 +1,278 @@
+{
+ "00_Research_Log": {
+  "file": "00_Research_Log.json",
+  "rows": 23
+ },
+ "01_Engine_Profile": {
+  "file": "01_Engine_Profile.json",
+  "rows": 13
+ },
+ "02_Project_Rules": {
+  "file": "02_Project_Rules.json",
+  "rows": 17
+ },
+ "03_ID_Registry": {
+  "file": "03_ID_Registry.json",
+  "rows": 1106
+ },
+ "04_Switches": {
+  "file": "04_Switches.json",
+  "rows": 191
+ },
+ "05_Variables_Enums": {
+  "file": "05_Variables_Enums.json",
+  "rows": 279
+ },
+ "06_Common_Events": {
+  "file": "06_Common_Events.json",
+  "rows": 26
+ },
+ "07_Map_Tree": {
+  "file": "07_Map_Tree.json",
+  "rows": 8
+ },
+ "08_Mansion_Blueprint": {
+  "file": "08_Mansion_Blueprint.json",
+  "rows": 51
+ },
+ "09_Doors_Transfers": {
+  "file": "09_Doors_Transfers.json",
+  "rows": 75
+ },
+ "10_Tileset_Usage": {
+  "file": "10_Tileset_Usage.json",
+  "rows": 54
+ },
+ "11_Event_Patterns": {
+  "file": "11_Event_Patterns.json",
+  "rows": 11
+ },
+ "12_Map_Events": {
+  "file": "12_Map_Events.json",
+  "rows": 284
+ },
+ "13_Event_Pages": {
+  "file": "13_Event_Pages.json",
+  "rows": 721
+ },
+ "14_Day_Progression": {
+  "file": "14_Day_Progression.json",
+  "rows": 11
+ },
+ "15_Time_AP": {
+  "file": "15_Time_AP.json",
+  "rows": 82
+ },
+ "16_NPC_Registry": {
+  "file": "16_NPC_Registry.json",
+  "rows": 16
+ },
+ "17_NPC_Visuals": {
+  "file": "17_NPC_Visuals.json",
+  "rows": 16
+ },
+ "18_NPC_Schedules": {
+  "file": "18_NPC_Schedules.json",
+  "rows": 71
+ },
+ "19_NPC_Map_Instances": {
+  "file": "19_NPC_Map_Instances.json",
+  "rows": 60
+ },
+ "20_Dialogue_Nodes": {
+  "file": "20_Dialogue_Nodes.json",
+  "rows": 138
+ },
+ "21_Repeat_Dialogue_Templates": {
+  "file": "21_Repeat_Dialogue_Templates.json",
+  "rows": 135
+ },
+ "22_Dialogue_Exhaustion": {
+  "file": "22_Dialogue_Exhaustion.json",
+  "rows": 43
+ },
+ "23_Evidence_Items": {
+  "file": "23_Evidence_Items.json",
+  "rows": 51
+ },
+ "24_Search_Points": {
+  "file": "24_Search_Points.json",
+  "rows": 23
+ },
+ "25_Clue_Logic": {
+  "file": "25_Clue_Logic.json",
+  "rows": 50
+ },
+ "26_Crime_Versions": {
+  "file": "26_Crime_Versions.json",
+  "rows": 7
+ },
+ "27_Version_Events": {
+  "file": "27_Version_Events.json",
+  "rows": 37
+ },
+ "28_Dialogue_Implementation": {
+  "file": "28_Dialogue_Implementation.json",
+  "rows": 201
+ },
+ "29_Audio_Library": {
+  "file": "29_Audio_Library.json",
+  "rows": 40
+ },
+ "30_Audio_Cues": {
+  "file": "30_Audio_Cues.json",
+  "rows": 375
+ },
+ "31_Map_Audio_States": {
+  "file": "31_Map_Audio_States.json",
+  "rows": 31
+ },
+ "32_Weather_Lighting": {
+  "file": "32_Weather_Lighting.json",
+  "rows": 51
+ },
+ "33_Visual_State_Events": {
+  "file": "33_Visual_State_Events.json",
+  "rows": 33
+ },
+ "34_UI_Menu": {
+  "file": "34_UI_Menu.json",
+  "rows": 22
+ },
+ "35_Plugin_Decisions": {
+  "file": "35_Plugin_Decisions.json",
+  "rows": 12
+ },
+ "36_Save_Load": {
+  "file": "36_Save_Load.json",
+  "rows": 16
+ },
+ "37_Ending_Resolver": {
+  "file": "37_Ending_Resolver.json",
+  "rows": 23
+ },
+ "38_Ending_Matrix": {
+  "file": "38_Ending_Matrix.json",
+  "rows": 79
+ },
+ "39_QA_Routes": {
+  "file": "39_QA_Routes.json",
+  "rows": 181
+ },
+ "40_Softlock_Audit": {
+  "file": "40_Softlock_Audit.json",
+  "rows": 41
+ },
+ "41_Event_Replay_Audit": {
+  "file": "41_Event_Replay_Audit.json",
+  "rows": 273
+ },
+ "42_Audio_QA": {
+  "file": "42_Audio_QA.json",
+  "rows": 382
+ },
+ "43_Vertical_Slice": {
+  "file": "43_Vertical_Slice.json",
+  "rows": 36
+ },
+ "44_Implementation_Order": {
+  "file": "44_Implementation_Order.json",
+  "rows": 108
+ },
+ "45_Source_Crosswalk": {
+  "file": "45_Source_Crosswalk.json",
+  "rows": 1092
+ },
+ "46_Coverage_Dashboard": {
+  "file": "46_Coverage_Dashboard.json",
+  "rows": 95
+ },
+ "47_RPGMZ_Review_Skill": {
+  "file": "47_RPGMZ_Review_Skill.json",
+  "rows": 22
+ },
+ "48_Audit_Findings": {
+  "file": "48_Audit_Findings.json",
+  "rows": 24
+ },
+ "49_Command_Feasibility": {
+  "file": "49_Command_Feasibility.json",
+  "rows": 84
+ },
+ "50_Project_Input_Requirements": {
+  "file": "50_Project_Input_Requirements.json",
+  "rows": 19
+ },
+ "51_Repair_Log": {
+  "file": "51_Repair_Log.json",
+  "rows": 23
+ },
+ "52_Release_Gates": {
+  "file": "52_Release_Gates.json",
+  "rows": 17
+ },
+ "53_Dialogue_Event_Commands": {
+  "file": "53_Dialogue_Event_Commands.json",
+  "rows": 2631
+ },
+ "54_Dialogue_Text_Blocks": {
+  "file": "54_Dialogue_Text_Blocks.json",
+  "rows": 1705
+ },
+ "55_Dialogue_Choices": {
+  "file": "55_Dialogue_Choices.json",
+  "rows": 64
+ },
+ "56_Dialogue_Writing_Briefs": {
+  "file": "56_Dialogue_Writing_Briefs.json",
+  "rows": 213
+ },
+ "57_Dialogue_Asset_Bindings": {
+  "file": "57_Dialogue_Asset_Bindings.json",
+  "rows": 18
+ },
+ "58_Dialogue_Scene_Registry": {
+  "file": "58_Dialogue_Scene_Registry.json",
+  "rows": 16
+ },
+ "59_Dialogue_Production_QA": {
+  "file": "59_Dialogue_Production_QA.json",
+  "rows": 12
+ },
+ "60_Prologue_Overview": {
+  "file": "60_Prologue_Overview.json",
+  "rows": 2
+ },
+ "61_Prologue_Map_Blueprint": {
+  "file": "61_Prologue_Map_Blueprint.json",
+  "rows": 67
+ },
+ "62_Prologue_Event_Registry": {
+  "file": "62_Prologue_Event_Registry.json",
+  "rows": 23
+ },
+ "63_Prologue_Command_List": {
+  "file": "63_Prologue_Command_List.json",
+  "rows": 106
+ },
+ "64_Prologue_Text_Blocks": {
+  "file": "64_Prologue_Text_Blocks.json",
+  "rows": 12
+ },
+ "65_Prologue_Movement_Routes": {
+  "file": "65_Prologue_Movement_Routes.json",
+  "rows": 8
+ },
+ "66_Prologue_Assets_Audio": {
+  "file": "66_Prologue_Assets_Audio.json",
+  "rows": 22
+ },
+ "67_Prologue_QA": {
+  "file": "67_Prologue_QA.json",
+  "rows": 30
+ },
+ "68_Prologue_Tile_Palette": {
+  "file": "68_Prologue_Tile_Palette.json",
+  "rows": 24
+ }
+}

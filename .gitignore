@@ -1,0 +1,47 @@
+# ---------------------------------------------------------------------------
+# RPG Maker MZ proprietary runtime and Company Assets — NEVER commit.
+#
+# This repository is public. The RPG Maker MZ core scripts, the RTP/NewData
+# art and audio, and the deployment runtime are licensed to the owner of an
+# RPG Maker MZ licence, not redistributable on a public repository.
+# Populate them from your own licensed install: see docs/ASSET_SETUP.md
+# ---------------------------------------------------------------------------
+/js/rmmz_*.js
+/js/libs/
+/img/
+/audio/
+/effects/
+/movies/
+/icon/
+/fonts/
+/nw/
+/www/
+/game.rmmzproject
+/package.json
+/index.html
+
+# Build output of the deployment step
+/dist/
+/deploy/
+
+# Save files and runtime state
+/save/
+*.rmmzsave
+config.rmmzsave
+
+# Editor / OS noise
+*.bak
+*.tmp
+*.orig
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Tooling
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+/tools/out/
+/preview/
