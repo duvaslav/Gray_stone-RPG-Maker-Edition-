@@ -2,6 +2,6 @@
 var $plugins =
 [
 {"name":"GrayStone_Core","status":true,"description":"Gray Stone core: menu shaping, map-entry guard and investigation state.","parameters":{"mapEntrySwitch":"17","hideCombatCommands":"true"}},
-{"name":"GrayStone_MessageUI","status":true,"description":"Styles the native Window_Message and Window_NameBox for Gray Stone.","parameters":{"nameBoxOffsetX":"8","messagePadding":"16","fontSize":"25","nameFontSize":"22","backOpacity":"216","nameColor":"#c9a227"}},
+{"name":"GrayStone_MessageUI","status":true,"description":"Styles the native Window_Message and Window_NameBox for Gray Stone.","parameters":{"nameBoxOffsetX":"8","messagePadding":"16","fontSize":"30","nameFontSize":"26","lineHeight":"42","backOpacity":"216","nameColor":"#c9a227"}},
 {"name":"GrayStone_8DirMovement","status":false,"description":"Eight-direction grid movement for the player. Enabled after the vertical slice passes on plain grid movement.","parameters":{"enabled":"true","normalizeSpeed":"true","strictCorners":"true"}}
 ];

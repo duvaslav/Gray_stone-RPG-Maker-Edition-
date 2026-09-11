@@ -99,7 +99,7 @@ function buildSystem(reg) {
       gameId: 20250911,
       screenWidth: 816, screenHeight: 624,
       uiAreaWidth: 816, uiAreaHeight: 624,
-      numberFontFilename: "", fallbackFonts: "", fontSize: 26,
+      numberFontFilename: "", fallbackFonts: "", fontSize: 28,
       mainFontFilename: "", windowOpacity: 192,
       screenScale: 1, menuBackgroundBlur: true,
       autosaveType: 1, // 1 = autosave on map transfer and on request

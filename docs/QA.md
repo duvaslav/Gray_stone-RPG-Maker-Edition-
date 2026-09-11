@@ -285,6 +285,51 @@ were meant, cracks where trees were meant.
 cannot say which cell is a hedge. The 36 `ASSUMED` bindings remain assumed until
 read off the real sheets.
 
+### D-14 — Dialogue text too small, and lines too far apart — **Medium**
+
+Reported from the first play-test. `GrayStone_MessageUI` set the body font to
+**25px — smaller than MZ's own default of 26** — while leaving `lineHeight` at
+MZ's fixed 36. The result was small text floating in tall rows, which is worse
+than either problem alone and is very visible once the window is scaled up on a
+large display.
+
+**Resolution:** body font 30, name 26, and `lineHeight` raised to 42 with an
+override on both windows — line height must grow with the font or a larger face
+simply overlaps itself inside 36px rows. `Window_Message` sizes itself from
+`fittingHeight(4)`, so overriding `lineHeight` also makes the box taller to
+match. The System base font went 26 → 28. All four are plugin parameters, so they
+can be tuned in the Plugin Manager without a rebuild.
+
+### D-15 — Roof and facade were the wrong tile families — **High**
+
+`68_Prologue_Tile_Palette` leaves the A3 roof and wall kinds as
+`VERIFY_IN_PROJECT`, and the placeholders were kind 48 / 56. Read off the real
+`Outside_A3` sheet, kind 48 is the **pastel pink-and-blue scalloped roof** and 56
+is cream brick — a seaside cottage, not a grey Victorian manor.
+
+**Resolution:** roof → kind 66 (grey slate/stone, A3 kind-row 2 col 2), facade →
+kind 72 (grey ashlar stone, kind-row 3 col 0).
+
+### D-16 — Sheet B (0,0) cannot hold a tile — **Low**
+
+The lamp was to be a two-tile object with its head at `B(0,0)`. That slot's tile
+id is **0**, which the engine reads as an empty cell, so the head would silently
+vanish. Caught by the resolver before it shipped. The lamp is now a single tile.
+
+Trees became single tiles for a related reason: the blueprint's collision column
+blocks exactly one cell per tree, and a canopy tile above would have to be a star
+tile laid on whatever is already there — the flowerbeds, in several cases.
+
+### D-17 — Sheet C is modern city content — **Medium**
+
+The only binding on sheet C was `inside.RUG` at C(0,0). In this asset set the C
+sheets hold cars, neon signs, vending machines and conveyor belts. Dropping a
+tile from there into an 1896 manor is an anachronism waiting to happen.
+
+**Resolution:** `RUG` removed and sheet C is now excluded by policy, recorded in
+the bindings file header. A period-appropriate carpet can be added later from a
+sheet that has one.
+
 ---
 
 ## Defects in the tests, not the game

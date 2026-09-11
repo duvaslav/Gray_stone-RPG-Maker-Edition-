@@ -22,14 +22,22 @@
  *
  * @param fontSize
  * @text Message font size
- * @desc Body text size. Cyrillic at 24-26px stays readable at 816x624.
+ * @desc Body text size. MZ's default is 26, which reads small once the window is
+ * scaled up on a large display. 30 is comfortable for Russian text.
  * @type number
- * @default 25
+ * @default 30
  *
  * @param nameFontSize
  * @text Name font size
  * @type number
- * @default 22
+ * @default 26
+ *
+ * @param lineHeight
+ * @text Message line height
+ * @desc Vertical space per line. Must grow with the font or lines collide; MZ's
+ * default 36 leaves a 30px font cramped. The message window resizes itself.
+ * @type number
+ * @default 42
  *
  * @param backOpacity
  * @text Window back opacity
@@ -69,8 +77,9 @@
   const p = PluginManager.parameters(PLUGIN);
   const NAME_OFFSET_X = Number(p.nameBoxOffsetX || 8);
   const PADDING = Number(p.messagePadding || 16);
-  const FONT_SIZE = Number(p.fontSize || 25);
-  const NAME_FONT_SIZE = Number(p.nameFontSize || 22);
+  const FONT_SIZE = Number(p.fontSize || 30);
+  const NAME_FONT_SIZE = Number(p.nameFontSize || 26);
+  const LINE_HEIGHT = Number(p.lineHeight || 42);
   const BACK_OPACITY = Number(p.backOpacity || 216);
   const NAME_COLOR = String(p.nameColor || "#c9a227");
 
@@ -88,6 +97,11 @@
   };
 
   Window_Message.prototype.updatePadding = function () { this.padding = PADDING; };
+
+  // Line height has to grow with the font size, or a larger font simply overlaps
+  // itself inside MZ's fixed 36px rows. Window_Message sizes itself from
+  // fittingHeight(4), so overriding this also makes the box taller to match.
+  Window_Message.prototype.lineHeight = function () { return LINE_HEIGHT; };
 
   const _Window_Message_resetFontSettings = Window_Message.prototype.resetFontSettings;
   Window_Message.prototype.resetFontSettings = function () {
@@ -113,6 +127,7 @@
   };
 
   Window_NameBox.prototype.updatePadding = function () { this.padding = Math.round(PADDING * 0.65); };
+  Window_NameBox.prototype.lineHeight = function () { return Math.round(LINE_HEIGHT * 0.85); };
 
   Window_NameBox.prototype.updatePlacement = function () {
     this.width = this.windowWidth();

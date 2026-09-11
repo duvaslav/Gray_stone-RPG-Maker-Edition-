@@ -85,7 +85,7 @@ function build() {
           map.putAutotile(x, y, Z.LOWER2, A("FACADE"));
           map.set(x, y, Z.UPPER, B("WINDOW_LIT"));
           break;
-        case "T": map.set(x, y, Z.LOWER2, B("TREE_TRUNK")); break;
+        case "T": map.set(x, y, Z.LOWER2, B("TREE")); break;
         case "H": map.set(x, y, Z.LOWER2, B("HEDGE")); break;
         case "#": map.set(x, y, Z.LOWER2, B("HEDGE")); break;  // sealed frame edge
         case "D": break;  // doorway: the opening stays clear, EV_PR_DOOR draws the door
@@ -116,13 +116,9 @@ function build() {
     }
   }
 
-  // Tree canopies sit above the player so Leonard can pass beneath the boundary
-  // planting without the frame looking flat.
-  for (let y = 1; y < HEIGHT; y++) {
-    for (let x = 0; x < WIDTH; x++) {
-      if (grid[y].structure[x] === "T") map.set(x, y - 1, Z.UPPER2, B("TREE_CROWN"));
-    }
-  }
+  // Trees are single tiles. The blueprint's collision column blocks exactly one
+  // cell per tree, and a separate canopy tile above would have to be a star tile
+  // sitting on whatever is already there -- the flowerbeds in several cases.
 
   // --- shadows and regions --------------------------------------------------
   map.castWallShadows();

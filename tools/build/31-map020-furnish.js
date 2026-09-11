@@ -46,7 +46,6 @@ const FURNITURE = {
     [4, 24, "FIREPLACE"], [4, 25, "ARMCHAIR"],
     [12, 20, "CABINET"], [13, 20, "CABINET"],
     [12, 27, "PLANT"],
-    [9, 25, "RUG"], [10, 25, "RUG"], [9, 26, "RUG"], [10, 26, "RUG"],
   ],
 
   // Library: two long bookcase runs with a reading table between them, and the
