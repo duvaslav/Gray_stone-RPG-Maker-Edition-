@@ -6,6 +6,8 @@ const path = require("path");
 const db = require("./00-database");
 const ces = require("./10-common-events");
 const registry = require("../lib/registry");
+const map005 = require("./20-map005-prologue");
+const map005ev = require("./21-map005-events");
 const tiles = require("../lib/tiles");
 
 const ROOT = path.join(__dirname, "..", "..");
@@ -123,6 +125,29 @@ function main() {
   write("Items.json", db.buildItems().items);
   write("Tilesets.json", db.buildTilesets());
   write("CommonEvents.json", ces.build(reg));
+
+  // --- maps ---------------------------------------------------------------
+  const mapInfos = [null];
+  const registerMap = (id, name, parentId, order) => {
+    while (mapInfos.length <= id) mapInfos.push(null);
+    mapInfos[id] = { id, name, parentId, order, expanded: false, scrollX: 0, scrollY: 0 };
+  };
+
+  const flagsFor = (tilesetId) => db.buildTilesets()[tilesetId].flags;
+
+  {
+    const { map, grid } = map005.build();
+    for (const ev of map005ev.build(reg)) if (ev) map.addEvent(ev);
+    const mismatches = map005.verifyCollision(map, grid, flagsFor(map005.TILESET_ID));
+    if (mismatches.length) {
+      throw new Error(`MAP_005 collision differs from the blueprint in ${mismatches.length} cells`);
+    }
+    write("Map005.json", map.toJSON());
+    registerMap(5, "MAP_005_Prologue_Front_Drive", 0, 1);
+    console.log(`  Map005    ${map.width}x${map.height}, ${map.events.length - 1} events, collision matches blueprint`);
+  }
+
+  write("MapInfos.json", mapInfos);
 
   // Databases MZ requires to exist even when the game never uses them.
   write("Skills.json", [null]);
