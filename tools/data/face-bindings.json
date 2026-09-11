@@ -1,0 +1,438 @@
+{
+  "_doc": [
+    "speaker_id + emotion_id -> faceName + faceIndex.",
+    "",
+    "Dialogue NEVER names a face file. It names a speaker and an emotion, and",
+    "this file resolves them. When the real portraits are drawn, edit only this",
+    "file and rebuild: no Show Text command changes, and speaker_id never changes.",
+    "",
+    "A standard MZ faceset is 576x288 = 4 columns x 2 rows = 8 faces of 144x144,",
+    "so faceIndex is 0..7.",
+    "",
+    "Every entry below is placeholder:true -- all emotions of a speaker currently",
+    "resolve to the same stock face. Replacing them is the portrait task; the",
+    "emotion vocabulary is already correct and should not be re-derived."
+  ],
+  "emotion_vocabulary": [
+    "neutral",
+    "serious",
+    "concerned",
+    "suspicious",
+    "irritated",
+    "sad",
+    "frightened",
+    "relieved"
+  ],
+  "speakers": {
+    "roland": {
+      "display_name": "Роланд",
+      "character_file": "People1",
+      "face_file": "People1",
+      "emotions": {
+        "neutral": {
+          "faceName": "People1",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "serious": {
+          "faceName": "People1",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "concerned": {
+          "faceName": "People1",
+          "faceIndex": 0,
+          "placeholder": true
+        }
+      }
+    },
+    "marlena": {
+      "display_name": "Марлена",
+      "character_file": "People1",
+      "face_file": "People1",
+      "emotions": {
+        "neutral": {
+          "faceName": "People1",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "serious": {
+          "faceName": "People1",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "concerned": {
+          "faceName": "People1",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "irritated": {
+          "faceName": "People1",
+          "faceIndex": 0,
+          "placeholder": true
+        }
+      }
+    },
+    "bartolomeo": {
+      "display_name": "Бартоломео",
+      "character_file": "People1",
+      "face_file": "People1",
+      "emotions": {
+        "neutral": {
+          "faceName": "People1",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "irritated": {
+          "faceName": "People1",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "serious": {
+          "faceName": "People1",
+          "faceIndex": 0,
+          "placeholder": true
+        }
+      }
+    },
+    "iona": {
+      "display_name": "Иона",
+      "character_file": "People1",
+      "face_file": "People1",
+      "emotions": {
+        "neutral": {
+          "faceName": "People1",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "concerned": {
+          "faceName": "People1",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "serious": {
+          "faceName": "People1",
+          "faceIndex": 0,
+          "placeholder": true
+        }
+      }
+    },
+    "sybilla": {
+      "display_name": "Сибилла",
+      "character_file": "People1",
+      "face_file": "People1",
+      "emotions": {
+        "neutral": {
+          "faceName": "People1",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "serious": {
+          "faceName": "People1",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "concerned": {
+          "faceName": "People1",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "sad": {
+          "faceName": "People1",
+          "faceIndex": 0,
+          "placeholder": true
+        }
+      }
+    },
+    "edrian": {
+      "display_name": "Отец Эдриан",
+      "character_file": "People1",
+      "face_file": "People1",
+      "emotions": {
+        "neutral": {
+          "faceName": "People1",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "serious": {
+          "faceName": "People1",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "concerned": {
+          "faceName": "People1",
+          "faceIndex": 0,
+          "placeholder": true
+        }
+      }
+    },
+    "caleb": {
+      "display_name": "Калеб",
+      "character_file": "People1",
+      "face_file": "People1",
+      "emotions": {
+        "neutral": {
+          "faceName": "People1",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "frightened": {
+          "faceName": "People1",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "concerned": {
+          "faceName": "People1",
+          "faceIndex": 0,
+          "placeholder": true
+        }
+      }
+    },
+    "linda": {
+      "display_name": "Линда",
+      "character_file": "People1",
+      "face_file": "People1",
+      "emotions": {
+        "neutral": {
+          "faceName": "People1",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "serious": {
+          "faceName": "People1",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "suspicious": {
+          "faceName": "People1",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "irritated": {
+          "faceName": "People1",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "frightened": {
+          "faceName": "People1",
+          "faceIndex": 0,
+          "placeholder": true
+        }
+      }
+    },
+    "celeste": {
+      "display_name": "Селеста",
+      "character_file": "People2",
+      "face_file": "People2",
+      "emotions": {
+        "neutral": {
+          "faceName": "People2",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "concerned": {
+          "faceName": "People2",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "suspicious": {
+          "faceName": "People2",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "frightened": {
+          "faceName": "People2",
+          "faceIndex": 0,
+          "placeholder": true
+        }
+      }
+    },
+    "vera": {
+      "display_name": "Вера",
+      "character_file": "People2",
+      "face_file": "People2",
+      "emotions": {
+        "neutral": {
+          "faceName": "People2",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "serious": {
+          "faceName": "People2",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "irritated": {
+          "faceName": "People2",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "suspicious": {
+          "faceName": "People2",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "frightened": {
+          "faceName": "People2",
+          "faceIndex": 0,
+          "placeholder": true
+        }
+      }
+    },
+    "beatrice": {
+      "display_name": "Беатриса",
+      "character_file": "People2",
+      "face_file": "People2",
+      "emotions": {
+        "neutral": {
+          "faceName": "People2",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "concerned": {
+          "faceName": "People2",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "suspicious": {
+          "faceName": "People2",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "sad": {
+          "faceName": "People2",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "frightened": {
+          "faceName": "People2",
+          "faceIndex": 0,
+          "placeholder": true
+        }
+      }
+    },
+    "nika": {
+      "display_name": "Ника",
+      "character_file": "People2",
+      "face_file": "People2",
+      "emotions": {
+        "neutral": {
+          "faceName": "People2",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "frightened": {
+          "faceName": "People2",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "sad": {
+          "faceName": "People2",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "suspicious": {
+          "faceName": "People2",
+          "faceIndex": 0,
+          "placeholder": true
+        }
+      }
+    },
+    "agnes": {
+      "display_name": "Агнес",
+      "character_file": "People2",
+      "face_file": "People2",
+      "emotions": {
+        "neutral": {
+          "faceName": "People2",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "serious": {
+          "faceName": "People2",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "concerned": {
+          "faceName": "People2",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "suspicious": {
+          "faceName": "People2",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "frightened": {
+          "faceName": "People2",
+          "faceIndex": 0,
+          "placeholder": true
+        }
+      }
+    },
+    "leonard": {
+      "display_name": "Леонард Грейстоун",
+      "character_file": "Actor1",
+      "face_file": "Actor1",
+      "emotions": {
+        "neutral": {
+          "faceName": "Actor1",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "serious": {
+          "faceName": "Actor1",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "concerned": {
+          "faceName": "Actor1",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "suspicious": {
+          "faceName": "Actor1",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "sad": {
+          "faceName": "Actor1",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "relieved": {
+          "faceName": "Actor1",
+          "faceIndex": 0,
+          "placeholder": true
+        }
+      }
+    },
+    "evelyn": {
+      "display_name": "Эвелин Хартвелл",
+      "character_file": "Actor2",
+      "face_file": "Actor2",
+      "emotions": {
+        "neutral": {
+          "faceName": "Actor2",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "serious": {
+          "faceName": "Actor2",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "concerned": {
+          "faceName": "Actor2",
+          "faceIndex": 0,
+          "placeholder": true
+        },
+        "relieved": {
+          "faceName": "Actor2",
+          "faceIndex": 0,
+          "placeholder": true
+        }
+      }
+    }
+  }
+}

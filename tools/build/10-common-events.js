@@ -162,14 +162,19 @@ function build(reg) {
       c.switchOff(S("S_0008_Mandatory_Event_Pending"));
       c.varSet(V("V_0029_Mandatory_Event_ID"), 0);
     c.endIf();
+    // Snapshot the day BEFORE branching on it. Branching on Current_Day while
+    // the branch body increments Current_Day makes every later branch match in
+    // turn: ending day 1 would run day 2's branch, then day 3's, and land on
+    // day 10 in a single call. Testing an immutable copy fires exactly one.
+    c.varFromVar(V("V_0034_Temp_Scratch_A"), V("V_0001_Current_Day"), 0);
     for (let d = 1; d <= 10; d++) {
-      c.ifVar(V("V_0001_Current_Day"), d, 0);
+      c.ifVar(V("V_0034_Temp_Scratch_A"), d, 0);
         c.ifSwitch(dayComplete(d), false);
           c.switchOn(dayComplete(d));
           c.varSet(V("V_0033_Checkpoint_Reason"), 5);
           c.callCommon(23);
           if (d < 10) {
-            c.varAdd(V("V_0001_Current_Day"), 1);
+            c.varSet(V("V_0001_Current_Day"), d + 1);
             c.switchOff(S("S_0009_Day_End_Requested"));
             c.callCommon(4);
           } else {
@@ -179,6 +184,7 @@ function build(reg) {
         c.endIf();
       c.endIf();
     }
+    c.varSet(V("V_0034_Temp_Scratch_A"), 0);
     c.switchOff(S("S_0009_Day_End_Requested"));
     c.switchOff(S("S_0014_Day_End_Available"));
     add(5, "CE_005_Day_End", c.done());
