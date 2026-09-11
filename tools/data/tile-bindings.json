@@ -1,0 +1,77 @@
+{
+  "_doc": [
+    "Semantic tile palette for Gray Stone. Maps are generated from semantic symbols",
+    "(G, P, S, W, R, ...) and resolved to numeric MZ tile IDs through this file, so a",
+    "wrong visual slot is corrected HERE and the maps are regenerated -- never by",
+    "hand-editing MapXXX.json.",
+    "",
+    "'verify' records how much confidence the binding carries:",
+    "  CALCULATED  - the ID follows from the engine's own tile-ID arithmetic",
+    "                (rmmz_core Tilemap ranges). Certain.",
+    "  SPEC        - the workbook (68_Prologue_Tile_Palette) names this exact kind.",
+    "  ASSUMED     - a plausible slot on the standard sheet that has NOT been checked",
+    "                against the real PNG. Confirm against img/tilesets/<sheet>.png",
+    "                after running tools/hydrate_assets.sh, then regenerate.",
+    "",
+    "Autotile IDs:  2048 + kind*48 + shape   (shape is solved by the map builder)",
+    "'kind' is the ENGINE-GLOBAL kind, not the per-sheet index the workbook uses:",
+    "  A1 0-15 | A2 16-47 | A3 48-79 | A4 80-127, eight kinds per palette row.",
+    "  A2 local (col,row) -> 16+row*8+col;  A3 -> 48+row*8+col;  A4 -> 80+row*8+col.",
+    "Normal tiles:  B=0 C=256 D=512 E=768, id = base + row*16 + col  (A5: 1536+row*8+col)"
+  ],
+
+  "outside": {
+    "_tilesetId": 2,
+    "autotiles": {
+      "GRASS":     { "kind": 16,  "sheet": "Outside_A2", "verify": "SPEC",    "note": "G - lawn; 1st A2 ground autotile" },
+      "DRIVE":     { "kind": 17,  "sheet": "Outside_A2", "verify": "SPEC",    "note": "P - gravel drive; 2nd A2 autotile" },
+      "STONE":     { "kind": 18,  "sheet": "Outside_A2", "verify": "SPEC",    "note": "S - paved porch; 3rd A2 autotile" },
+      "SOIL":      { "kind": 19,  "sheet": "Outside_A2", "verify": "ASSUMED", "note": "flowerbed soil base" },
+      "ROOF":      { "kind": 48, "sheet": "Outside_A3", "verify": "ASSUMED", "note": "R - slate roof; A3 even row = roof" },
+      "FACADE":    { "kind": 56, "sheet": "Outside_A3", "verify": "ASSUMED", "note": "W - stone facade; A3 odd row = building wall" }
+    },
+    "tiles": {
+      "HEDGE":       { "sheet": "B", "col": 2,  "row": 3, "verify": "ASSUMED", "blocked": true,  "note": "H - formal hedge" },
+      "TREE_TRUNK":  { "sheet": "B", "col": 4,  "row": 7, "verify": "ASSUMED", "blocked": true,  "note": "T - tree base" },
+      "TREE_CROWN":  { "sheet": "B", "col": 4,  "row": 6, "verify": "ASSUMED", "star": true,     "note": "T - canopy, drawn above the player" },
+      "LAMP":        { "sheet": "B", "col": 6,  "row": 5, "verify": "ASSUMED", "blocked": true,  "note": "L - wrought-iron lamp" },
+      "WINDOW_LIT":  { "sheet": "B", "col": 9,  "row": 2, "verify": "ASSUMED", "star": true,     "note": "w - warm lit facade window (star: must not unblock the wall)" },
+      "FLOWERS":     { "sheet": "B", "col": 1,  "row": 1, "verify": "ASSUMED", "blocked": true,  "note": "F - flowerbed planting" },
+      "STEP_STONE":  { "sheet": "A5","col": 1,  "row": 0, "verify": "ASSUMED", "blocked": false, "note": "porch step / door underlay" }
+    }
+  },
+
+  "inside": {
+    "_tilesetId": 4,
+    "autotiles": {
+      "FLOOR_WOOD":   { "kind": 16, "sheet": "Inside_A2", "verify": "ASSUMED", "note": "main parquet" },
+      "FLOOR_STONE":  { "kind": 17, "sheet": "Inside_A2", "verify": "ASSUMED", "note": "service / kitchen flagstone" },
+      "FLOOR_CARPET": { "kind": 18, "sheet": "Inside_A2", "verify": "ASSUMED", "note": "formal rooms" },
+      "FLOOR_TILE":   { "kind": 19, "sheet": "Inside_A2", "verify": "ASSUMED", "note": "scullery / laundry" },
+      "WALL_TOP":     { "kind": 80, "sheet": "Inside_A4", "verify": "ASSUMED", "note": "A4 even row = wall top" },
+      "WALL_SIDE":    { "kind": 88, "sheet": "Inside_A4", "verify": "ASSUMED", "note": "A4 odd row = wall face" }
+    },
+    "tiles": {
+      "DOOR_INNER":   { "sheet": "B", "col": 0,  "row": 1, "verify": "ASSUMED", "blocked": false, "note": "interior doorway underlay" },
+      "TABLE":        { "sheet": "B", "col": 0,  "row": 3, "verify": "ASSUMED", "blocked": true },
+      "CHAIR":        { "sheet": "B", "col": 2,  "row": 3, "verify": "ASSUMED", "blocked": true },
+      "BOOKSHELF":    { "sheet": "B", "col": 4,  "row": 2, "verify": "ASSUMED", "blocked": true },
+      "CABINET":      { "sheet": "B", "col": 6,  "row": 2, "verify": "ASSUMED", "blocked": true },
+      "DESK":         { "sheet": "B", "col": 8,  "row": 3, "verify": "ASSUMED", "blocked": true },
+      "ARMCHAIR":     { "sheet": "B", "col": 10, "row": 3, "verify": "ASSUMED", "blocked": true },
+      "FIREPLACE":    { "sheet": "B", "col": 12, "row": 2, "verify": "ASSUMED", "blocked": true },
+      "RUG":          { "sheet": "C", "col": 0,  "row": 0, "verify": "ASSUMED", "blocked": false },
+      "PAINTING":     { "sheet": "B", "col": 14, "row": 1, "verify": "ASSUMED", "star": true,     "note": "wall art: star so it cannot unblock the wall" },
+      "CLOCK":        { "sheet": "B", "col": 15, "row": 1, "verify": "ASSUMED", "star": true },
+      "CURTAIN":      { "sheet": "B", "col": 13, "row": 1, "verify": "ASSUMED", "star": true },
+      "WINDOW_IN":    { "sheet": "B", "col": 12, "row": 1, "verify": "ASSUMED", "star": true },
+      "PLANT":        { "sheet": "B", "col": 9,  "row": 5, "verify": "ASSUMED", "blocked": true },
+      "STAIR_UP":     { "sheet": "B", "col": 2,  "row": 6, "verify": "ASSUMED", "blocked": false, "note": "grand staircase; ladder flag set in Tilesets" },
+      "STAIR_DOWN":   { "sheet": "B", "col": 4,  "row": 6, "verify": "ASSUMED", "blocked": false },
+      "COUNTER":      { "sheet": "B", "col": 0,  "row": 5, "verify": "ASSUMED", "blocked": true,  "counter": true, "note": "kitchen work surface; talk-through" },
+      "STOVE":        { "sheet": "B", "col": 2,  "row": 5, "verify": "ASSUMED", "blocked": true },
+      "BARREL":       { "sheet": "B", "col": 6,  "row": 5, "verify": "ASSUMED", "blocked": true },
+      "CRATE":        { "sheet": "B", "col": 7,  "row": 5, "verify": "ASSUMED", "blocked": true }
+    }
+  }
+}
