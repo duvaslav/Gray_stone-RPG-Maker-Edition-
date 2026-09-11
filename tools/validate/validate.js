@@ -361,6 +361,24 @@ function main() {
     if (names.length) info("PLUGINS", `${names.length} plugin(s) declared, all files present`, "plugins.js");
   }
 
+  // ---- tileset provenance
+  const synthesized = Array.isArray(tilesets) &&
+    tilesets.some((t) => t && String(t.note || "").includes("<graystone_synthesized_flags>"));
+  const imgPresent = fs.existsSync(path.join(ROOT, "img", "tilesets"));
+  if (synthesized && imgPresent) {
+    err("TILESET_FLAGS_SYNTHESIZED",
+      "data/Tilesets.json carries synthesized flags while the real tilesets are present. " +
+      "The stock passability has been replaced by ours, so tiles the bindings do not name are walkable. " +
+      "Copy data/Tilesets.json from your RPG Maker MZ NewData (tools/hydrate_assets.sh does this) and rebuild.",
+      "Tilesets");
+  } else if (synthesized) {
+    info("TILESET_FLAGS_SYNTHESIZED",
+      "data/Tilesets.json flags are synthesized from tile-bindings.json; they do not describe the real art yet.",
+      "Tilesets");
+  } else if (tilesets) {
+    info("TILESET_FLAGS_STOCK", "data/Tilesets.json carries stock passability flags.", "Tilesets");
+  }
+
   // ---- asset references: recorded, not resolved (Company Assets are absent)
   const assetRefs = new Set();
   const collectAssets = (root) => walkLists(root, (list) => {

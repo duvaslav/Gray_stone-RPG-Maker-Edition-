@@ -37,13 +37,27 @@ node tools/validate/validate.js
 node tools/verify_assets.js
 ```
 
-The hydration script copies the runtime, art, audio and deployment shell. It
-deliberately does **not** copy two things:
+The hydration script copies the runtime, art, audio and deployment shell, plus
+**`data/Tilesets.json`** — the one data file that must travel with the art,
+because it pairs the vendor's 8192 passability flags with the vendor's tilesets.
+Without it the project keeps synthesized flags and real trees, fences and walls
+become walkable (defect D-13).
 
-- `data/` — Gray Stone's entire database and both maps are generated. The
-  template's `data/` would destroy them.
+It deliberately does **not** copy:
+
+- the rest of `data/` — Gray Stone's database and both maps are generated, and
+  the template's `data/` would destroy them;
 - `js/plugins.js` — that file lists the Gray Stone plugins; it is project
   source, not a Company Asset.
+
+Check which flags the project is using:
+
+```
+node tools/validate/validate.js
+```
+
+`TILESET_FLAGS_STOCK` means the vendor's passability is in place.
+`TILESET_FLAGS_SYNTHESIZED` alongside present art is a hard error.
 
 ## What the project currently references
 
@@ -79,10 +93,18 @@ which cell of `Outside_B` / `Inside_B` is a hedge, a lamp, a bookcase and so on.
 The workbook itself marks these `VISUAL_SLOT_VERIFY_IN_PROJECT`, so this is a
 known, expected step rather than a defect.
 
-To confirm them, open `img/tilesets/Outside_B.png` in any image viewer, count
-cells of 48×48 from the top-left starting at zero, and check that the `col`/`row`
-in the bindings file lands on the object its `note` describes. Correct the file,
-set `"verify": "CONFIRMED"`, then:
+To confirm them, render the contact sheets:
+
+```bash
+node tools/pick_tiles.js
+```
+
+This writes `tools/out/tiles-<sheet>.html` for every sheet the project uses. Each
+cell is tagged with its `col,row` and numeric tile id, bordered by the
+passability the project will actually read (red solid, blue drawn-above-player,
+grey passable), and outlined in gold where a binding currently points. Read off
+the correct `col,row` for each object, correct the bindings file, set
+`"verify": "CONFIRMED"`, then:
 
 ```bash
 node tools/build/index.js

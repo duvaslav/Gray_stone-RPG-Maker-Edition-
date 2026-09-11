@@ -66,6 +66,7 @@ node tools/validate/validate.js   ->  0 errors, 0 warnings, 4 notes
 node tools/sim/regression.js      ->  179 checks, 28 scenarios, 0 failures
 node tools/sim/vertical-slice.js  ->  PASSED end to end
 node tools/verify_assets.js       ->  44 references, 0 resolvable (assets absent)
+node tools/pick_tiles.js         ->  contact sheets (needs hydrated assets)
 ```
 
 ### Regression coverage
@@ -247,6 +248,42 @@ spread on MAP_020. Verified: 0 shared cells across all 50 day/block states.
 A related implementation defect was caught by the same test: a hand-written
 Roland placeholder had only an active page, so it blocked its cell and showed its
 sprite regardless of the schedule. It is superseded by the generated instance.
+
+### D-13 — Generated `Tilesets.json` replaced the vendor's passability — **Critical**
+
+Found the first time the project was run with real assets hydrated.
+
+`Tilesets.json` pairs 8192 passability flags with the stock art. The build was
+*authoring* that file from `tile-bindings.json`, and `hydrate_assets.sh`
+deliberately skipped all of `data/` to protect the generated maps — so the
+project ended up running the **real stock PNGs against our synthesized flags**.
+
+Those flags name only the handful of decorations the bindings list: **7 nonzero
+flags across the whole of sheets B–E**. Every other tile — real trees, fences,
+rocks, walls, furniture — was therefore *passable*. The map also rendered wrong
+objects, because the slots were the ones marked `ASSUMED`: lockers where hedges
+were meant, barrels where facade windows were meant, dark archways where lamps
+were meant, cracks where trees were meant.
+
+**Resolution:**
+- `Tilesets.json` is now **consumed, not authored**. If a stock file is present
+  the build preserves it and applies only a documented, currently-empty flag
+  overlay.
+- `hydrate_assets.sh` now copies `data/Tilesets.json` from NewData — the one data
+  file that must travel with the art — while still protecting generated maps.
+- A synthesized file is detected two ways, because the marker only exists on
+  files written after it was introduced: an explicit `note` marker, **and** flag
+  density (fewer than 24 nonzero flags across B–E cannot be stock).
+- The validator raises a hard **ERROR** if synthesized flags are found while real
+  tilesets are present, and a note when they are synthesized with no art yet.
+- `tools/pick_tiles.js` renders each sheet as a labelled contact sheet — every
+  cell tagged with its `col,row` and tile id, bordered by the passability the
+  project will actually read, gold-outlined where a binding points — so a slot is
+  confirmed by looking instead of guessed.
+
+**Still open:** the tile *identities* themselves. Flags fix passability; they
+cannot say which cell is a hedge. The 36 `ASSUMED` bindings remain assumed until
+read off the real sheets.
 
 ---
 

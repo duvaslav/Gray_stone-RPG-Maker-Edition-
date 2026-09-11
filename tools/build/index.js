@@ -123,11 +123,21 @@ function vehicle(characterName, characterIndex) {
 function main() {
   const reg = registry.build();
 
+  // Tilesets: preserve the stock file if it is there. It pairs the vendor's
+  // passability with the vendor's art, and overwriting it with our own guesses
+  // is what makes real trees and walls walkable.
+  let stockTilesets = null;
+  const tsPath = path.join(DATA, "Tilesets.json");
+  if (fs.existsSync(tsPath)) {
+    try { stockTilesets = JSON.parse(fs.readFileSync(tsPath, "utf8")); } catch (e) { stockTilesets = null; }
+  }
+  const ts = db.buildTilesets(stockTilesets);
+
   write("System.json", buildSystem(reg));
   write("Actors.json", db.buildActors());
   write("Classes.json", db.buildClasses());
   write("Items.json", db.buildItems().items);
-  write("Tilesets.json", db.buildTilesets());
+  write("Tilesets.json", ts.list);
   write("CommonEvents.json", ces.build(reg));
 
   // --- maps ---------------------------------------------------------------
@@ -137,7 +147,7 @@ function main() {
     mapInfos[id] = { id, name, parentId, order, expanded: false, scrollX: 0, scrollY: 0 };
   };
 
-  const flagsFor = (tilesetId) => db.buildTilesets()[tilesetId].flags;
+  const flagsFor = (tilesetId) => ts.list[tilesetId].flags;
 
   {
     const { map, grid } = map005.build();
@@ -208,10 +218,16 @@ function main() {
   write("Animations.json", [null]);
 
   console.log("database written:");
+  if (ts.source === "stock") {
+    console.log(`  tilesets  STOCK file preserved${ts.overlaid ? ` (+${ts.overlaid} deliberate flag overrides)` : ""}`);
+  } else {
+    console.log("  tilesets  SYNTHESIZED -- no stock Tilesets.json present.");
+    console.log("            Passability is derived from tile-bindings.json and does NOT");
+    console.log("            describe the real art. Hydrate assets to replace it.");
+  }
   console.log(`  switches  ${reg.switches.names.length - 1} slots, ${Object.keys(reg.switches.byName).length} named`);
   console.log(`  variables ${reg.variables.names.length - 1} slots, ${Object.keys(reg.variables.byName).length} named`);
   console.log(`  items     ${db.buildItems().items.length - 1}`);
-  console.log(`  tilesets  ${db.buildTilesets().length - 1}`);
   console.log(`  common events 25`);
   const assumed = tiles.assumedBindings();
   if (assumed.length) console.log(`  tile bindings still ASSUMED: ${assumed.length} (see docs/ASSET_SETUP.md)`);

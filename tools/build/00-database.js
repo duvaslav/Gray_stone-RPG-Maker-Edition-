@@ -88,20 +88,77 @@ function buildItems() {
 }
 
 // --- tilesets --------------------------------------------------------------
-function tilesetEntry(id, name, sheets, flags, mode = 1) {
-  return { id, name, mode, note: "", tilesetNames: sheets, flags };
+function tilesetEntry(id, name, sheets, flags, mode = 1, note = "") {
+  return { id, name, mode, note, tilesetNames: sheets, flags };
 }
 
-function buildTilesets() {
+// Marker stamped into a tileset we authored ourselves, so a synthesized file can
+// always be told apart from the stock one at a glance and by the validator.
+const SYNTH_MARK = "<graystone_synthesized_flags>";
+
+// A file we authored is detected two ways, because the marker only exists on
+// files written after it was introduced:
+//   1. the explicit marker, and
+//   2. flag density. Our synthesized flags name only the handful of decorations
+//      the bindings list, so the B-E range is almost entirely zero. A stock
+//      sheet has dozens of solid tiles (trees, fences, rocks, furniture).
+const STOCK_BE_FLAG_MIN = 24;
+
+function isSynthesized(list) {
+  if (!Array.isArray(list)) return true;
+  if (list.some((t) => t && String(t.note || "").includes(SYNTH_MARK))) return true;
+  for (const t of list) {
+    if (!t || !t.flags) continue;
+    const hasBSheet = (t.tilesetNames || []).slice(5).some((n) => n);
+    if (!hasBSheet) continue;
+    const be = t.flags.slice(0, 1024).filter((f) => f).length;
+    if (be < STOCK_BE_FLAG_MIN) return true;   // far too sparse to be stock
+  }
+  return false;
+}
+
+// Gray Stone-specific flag overrides, applied ON TOP of the stock flags.
+// Empty by design: the stock passability is authored by the engine vendor to
+// match the stock art, and is authoritative. Add an entry here only with a
+// stated reason, never to paper over a wrongly chosen tile.
+const FLAG_OVERLAY = {
+  // "2": { "1234": 0x0f },   // tilesetId: { tileId: flags }
+};
+
+// Tilesets are CONSUMED, not authored, whenever the stock file is present.
+//
+// This file pairs 8192 passability flags with the stock art. Regenerating it
+// from our own guesses replaces the vendor's passability with ours: in practice
+// that left only the handful of decorations we had named as solid and every
+// other tree, fence and building tile walkable. The stock file wins; we only
+// overlay deliberate, documented exceptions.
+function buildTilesets(existing) {
+  if (existing && !isSynthesized(existing)) {
+    const out = JSON.parse(JSON.stringify(existing));
+    let overlaid = 0;
+    for (const [tid, tiles] of Object.entries(FLAG_OVERLAY)) {
+      const t = out[Number(tid)];
+      if (!t) continue;
+      for (const [tileId, flag] of Object.entries(tiles)) {
+        t.flags[Number(tileId)] = flag;
+        overlaid++;
+      }
+    }
+    return { list: out, source: "stock", overlaid };
+  }
+
+  // Fallback only: no stock file present (assets not hydrated). Passability is
+  // derived from tools/data/tile-bindings.json so the project is internally
+  // consistent and testable, but it does NOT describe the real art.
   const empty = new Array(8192).fill(0);
+  const mark = SYNTH_MARK;
   const list = [null];
-  // Slots 1..5 keep the standard NewData ordering so a hydrated project lines up.
-  list[1] = tilesetEntry(1, "Overworld", ["World_A1", "World_A2", "", "", "", "World_B", "World_C", "", ""], empty.slice(), 0);
-  list[2] = tilesetEntry(2, "Outside", ["Outside_A1", "Outside_A2", "Outside_A3", "Outside_A4", "Outside_A5", "Outside_B", "Outside_C", "", ""], tiles.buildFlags("outside"));
-  list[3] = tilesetEntry(3, "Dungeon", ["Dungeon_A1", "Dungeon_A2", "Dungeon_A3", "Dungeon_A4", "Dungeon_A5", "Dungeon_B", "Dungeon_C", "", ""], tiles.buildFlags("inside"));
-  list[4] = tilesetEntry(4, "Inside", ["Inside_A1", "Inside_A2", "", "Inside_A4", "Inside_A5", "Inside_B", "Inside_C", "", ""], tiles.buildFlags("inside"));
-  list[5] = tilesetEntry(5, "Interior", ["Inside_A1", "Inside_A2", "", "Inside_A4", "Inside_A5", "Inside_B", "Inside_C", "", ""], tiles.buildFlags("inside"));
-  return list;
+  list[1] = tilesetEntry(1, "Overworld", ["World_A1", "World_A2", "", "", "", "World_B", "World_C", "", ""], empty.slice(), 0, mark);
+  list[2] = tilesetEntry(2, "Outside", ["Outside_A1", "Outside_A2", "Outside_A3", "Outside_A4", "Outside_A5", "Outside_B", "Outside_C", "", ""], tiles.buildFlags("outside"), 1, mark);
+  list[3] = tilesetEntry(3, "Dungeon", ["Dungeon_A1", "Dungeon_A2", "Dungeon_A3", "Dungeon_A4", "Dungeon_A5", "Dungeon_B", "Dungeon_C", "", ""], tiles.buildFlags("inside"), 1, mark);
+  list[4] = tilesetEntry(4, "Inside", ["Inside_A1", "Inside_A2", "", "Inside_A4", "Inside_A5", "Inside_B", "Inside_C", "", ""], tiles.buildFlags("inside"), 1, mark);
+  list[5] = tilesetEntry(5, "Interior", ["Inside_A1", "Inside_A2", "", "Inside_A4", "Inside_A5", "Inside_B", "Inside_C", "", ""], tiles.buildFlags("inside"), 1, mark);
+  return { list, source: "synthesized", overlaid: 0 };
 }
 
 // --- actors / classes ------------------------------------------------------
@@ -128,4 +185,4 @@ function buildClasses() {
   }];
 }
 
-module.exports = { write, buildSwitches, buildVariables, buildItems, buildTilesets, buildActors, buildClasses, DATA, ROOT };
+module.exports = { write, buildSwitches, buildVariables, buildItems, buildTilesets, buildActors, buildClasses, isSynthesized, SYNTH_MARK, DATA, ROOT };
