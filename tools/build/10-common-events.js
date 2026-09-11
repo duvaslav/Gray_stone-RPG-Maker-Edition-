@@ -309,26 +309,76 @@ function build(reg) {
 
   // ---------------------------------------------------------------- CE_010
   {
+    const AUDIO = require("../data/audio-bindings.json");
     const c = new CmdList();
     c.comment([
-      "CE_010 Refresh audio. Compares the wanted profile against V27/V28 and only",
-      "issues Play BGM/BGS when it actually changes -- entering a map must not",
-      "restart the track that is already playing.",
+      "CE_010 Refresh audio. Resolves the semantic slot for (map, time block)",
+      "through tools/data/audio-bindings.json.",
+      "",
+      "V27/V28 hold the profile currently playing. A track is only (re)started",
+      "when the resolved profile actually differs, so walking back into a room",
+      "does not restart the music from the top.",
     ].join("\n"));
     c.ifSwitch(S("S_0006_Audio_Scene_Override"));
       c.exitEvent();
     c.endIf();
+
+    // Encode the wanted profile as mapId*10 + block: one integer to compare.
     c.varSet(V("V_0034_Temp_Scratch_A"), 0);
-    c.comment("Profile selection: interior manor maps share one profile, exteriors another.");
     for (const m of PLAY_MAPS) {
+      const profile = AUDIO.map_profiles[String(m)];
+      if (!profile) continue;
       c.ifScript(`$gameMap.mapId() === ${m}`);
-        c.varSet(V("V_0034_Temp_Scratch_A"), m);
+        for (const b of BLOCK) {
+          c.ifVar(V("V_0004_Time_Block"), b.id, 0);
+            c.varSet(V("V_0034_Temp_Scratch_A"), m * 10 + b.id);
+          c.endIf();
+        }
       c.endIf();
     }
-    c.ifVarVar(V("V_0027_Previous_BGM_State"), V("V_0034_Temp_Scratch_A"), 5); // changed
+
+    c.ifVarVar(V("V_0027_Previous_BGM_State"), V("V_0034_Temp_Scratch_A"), 5);
+      for (const m of PLAY_MAPS) {
+        const profile = AUDIO.map_profiles[String(m)];
+        if (!profile) continue;
+        for (const b of BLOCK) {
+          const slot = profile[String(b.id)];
+          const track = slot && AUDIO.bgm[slot];
+          if (!track) continue;
+          c.ifVar(V("V_0034_Temp_Scratch_A"), m * 10 + b.id, 0);
+            c.bgm(audio(track.name, track.volume, track.pitch, 0));
+          c.endIf();
+        }
+      }
       c.varFromVar(V("V_0027_Previous_BGM_State"), V("V_0034_Temp_Scratch_A"), 0);
-      c.comment("<<GENERATED_BGM_SELECTION>> exact_file resolved from 29_Audio_Library");
     c.endIf();
+
+    // Ambience is per map, not per block.
+    c.varSet(V("V_0035_Temp_Instance_Count"), 0);
+    for (const m of PLAY_MAPS) {
+      const profile = AUDIO.map_profiles[String(m)];
+      if (!profile || !profile.bgs) continue;
+      c.ifScript(`$gameMap.mapId() === ${m}`);
+        c.varSet(V("V_0035_Temp_Instance_Count"), m);
+      c.endIf();
+    }
+    c.ifVarVar(V("V_0028_Previous_BGS_State"), V("V_0035_Temp_Instance_Count"), 5);
+      c.ifVar(V("V_0035_Temp_Instance_Count"), 0, 0);
+        c.comment("This map has no standing ambience: stop the old one rather than leave it running.");
+        c.fadeoutBgs(2);
+      c.endIf();
+      for (const m of PLAY_MAPS) {
+        const profile = AUDIO.map_profiles[String(m)];
+        const amb = profile && profile.bgs && AUDIO.bgs[profile.bgs];
+        if (!amb) continue;
+        c.ifVar(V("V_0035_Temp_Instance_Count"), m, 0);
+          c.bgs(audio(amb.name, amb.volume, amb.pitch, 0));
+        c.endIf();
+      }
+      c.varFromVar(V("V_0028_Previous_BGS_State"), V("V_0035_Temp_Instance_Count"), 0);
+    c.endIf();
+    c.varSet(V("V_0034_Temp_Scratch_A"), 0);
+    c.varSet(V("V_0035_Temp_Instance_Count"), 0);
     add(10, "CE_010_Refresh_Audio", c.done());
   }
 
@@ -356,17 +406,7 @@ function build(reg) {
   }
 
   // ---------------------------------------------------------------- CE_012
-  {
-    const c = new CmdList();
-    c.comment([
-      "CE_012 Add evidence. Input V23 = clue item id.",
-      "The per-clue switch is the idempotence guard: a second discovery of the same",
-      "clue grants no item and no counter increment. V23 is always cleared.",
-    ].join("\n"));
-    c.comment("<<GENERATED_CLUE_BRANCHES>> emitted by tools/build/40-evidence.js");
-    c.varSet(V("V_0023_Clue_Item_ID_Input"), 0);
-    add(12, "CE_012_Add_Evidence", c.done());
-  }
+  add(12, "CE_012_Add_Evidence", require("./41-evidence").buildAddEvidence(reg).list);
 
   // ---------------------------------------------------------------- CE_013
   {

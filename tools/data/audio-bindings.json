@@ -1,0 +1,73 @@
+{
+  "_doc": [
+    "Semantic audio slot -> concrete file, for the 39 slots in 29_Audio_Library.",
+    "",
+    "29_Audio_Library leaves every exact filename as VERIFY_IN_PROJECT (workbook",
+    "finding F-018: 0 of 39 verified). Events must not name files directly, so this",
+    "file is the single place a name lives. CE_010 resolves BGM/BGS through it.",
+    "",
+    "Names below are from the standard RPG Maker MZ NewData audio set -- the same",
+    "set 66_Prologue_Assets_Audio already commits the project to (Theme4, Wind2,",
+    "Horse, Sand, Crow, Door2, Mystery). They are marked ASSUMED because no audio/",
+    "folder has been inventoried here: run tools/verify_assets.js after hydrating",
+    "assets, then correct any slot that does not resolve. Nothing else changes.",
+    "",
+    "volume/pitch come from 29_Audio_Library's recommended levels."
+  ],
+  "bgm": {
+    "AUD_BGM_MANOR_DAY":     { "name": "Theme2",  "volume": 65, "pitch": 100, "verify": "ASSUMED" },
+    "AUD_BGM_MANOR_EVENING": { "name": "Theme4",  "volume": 60, "pitch": 95,  "verify": "SPEC", "note": "the prologue already uses Theme4 for the same evening mood" },
+    "AUD_BGM_MANOR_NIGHT":   { "name": "Theme6",  "volume": 55, "pitch": 92,  "verify": "ASSUMED" },
+    "AUD_BGM_EXTERIOR":      { "name": "Theme1",  "volume": 60, "pitch": 100, "verify": "ASSUMED" },
+    "AUD_BGM_CHAPEL":        { "name": "Theme5",  "volume": 55, "pitch": 98,  "verify": "ASSUMED" },
+    "AUD_BGM_PASSAGE":       { "name": "Darkness","volume": 55, "pitch": 95,  "verify": "ASSUMED" },
+    "AUD_BGM_INCIDENT":      { "name": "Mystery", "volume": 70, "pitch": 100, "verify": "ASSUMED" },
+    "AUD_BGM_FINAL":         { "name": "Theme3",  "volume": 70, "pitch": 100, "verify": "ASSUMED" },
+    "AUD_BGM_EPILOGUE":      { "name": "Theme5",  "volume": 60, "pitch": 100, "verify": "ASSUMED" }
+  },
+  "bgs": {
+    "AUD_BGS_RAIN":    { "name": "Rain",    "volume": 65, "pitch": 100, "verify": "ASSUMED" },
+    "AUD_BGS_WIND":    { "name": "Wind2",   "volume": 45, "pitch": 90,  "verify": "SPEC", "note": "used by the prologue" },
+    "AUD_BGS_FIRE":    { "name": "Fire",    "volume": 55, "pitch": 100, "verify": "ASSUMED" },
+    "AUD_BGS_KITCHEN": { "name": "Fire",    "volume": 25, "pitch": 105, "verify": "ASSUMED" },
+    "AUD_BGS_WATER":   { "name": "Fountain","volume": 25, "pitch": 100, "verify": "ASSUMED" },
+    "AUD_BGS_STABLE":  { "name": "Wind1",   "volume": 40, "pitch": 100, "verify": "ASSUMED" },
+    "AUD_BGS_THUNDER": { "name": "Storm",   "volume": 50, "pitch": 95,  "verify": "ASSUMED" },
+    "AUD_BGS_PASSAGE": { "name": "Darkness","volume": 30, "pitch": 90,  "verify": "ASSUMED" }
+  },
+  "me": {
+    "AUD_ME_DISCOVERY":  { "name": "Mystery1", "volume": 80, "pitch": 100, "verify": "ASSUMED" },
+    "AUD_ME_DAY_END":    { "name": "Inn1",     "volume": 80, "pitch": 95,  "verify": "ASSUMED" },
+    "AUD_ME_CHAPTER":    { "name": "Mystery",  "volume": 75, "pitch": 95,  "verify": "SPEC", "note": "the prologue title card uses Mystery" },
+    "AUD_ME_ACCUSATION": { "name": "Shock1",   "volume": 85, "pitch": 100, "verify": "ASSUMED" },
+    "AUD_ME_EPILOGUE":   { "name": "Organ",    "volume": 80, "pitch": 100, "verify": "ASSUMED" }
+  },
+  "se": {
+    "AUD_SE_DOOR":      { "name": "Door2",   "volume": 80, "pitch": 90,  "verify": "SPEC" },
+    "AUD_SE_LOCK":      { "name": "Lock",    "volume": 80, "pitch": 100, "verify": "ASSUMED" },
+    "AUD_SE_KEY":       { "name": "Key",     "volume": 75, "pitch": 100, "verify": "ASSUMED" },
+    "AUD_SE_STAIRS":    { "name": "Move1",   "volume": 70, "pitch": 100, "verify": "ASSUMED" },
+    "AUD_SE_PAPER":     { "name": "Book2",   "volume": 75, "pitch": 105, "verify": "ASSUMED" },
+    "AUD_SE_BOOK":      { "name": "Book1",   "volume": 75, "pitch": 100, "verify": "ASSUMED" },
+    "AUD_SE_DRAWER":    { "name": "Open1",   "volume": 75, "pitch": 95,  "verify": "ASSUMED" },
+    "AUD_SE_DISHES":    { "name": "Sound1",  "volume": 70, "pitch": 100, "verify": "ASSUMED" },
+    "AUD_SE_BELL":      { "name": "Bell1",   "volume": 80, "pitch": 100, "verify": "ASSUMED" },
+    "AUD_SE_MECHANISM": { "name": "Switch1", "volume": 85, "pitch": 95,  "verify": "ASSUMED" },
+    "AUD_SE_STONE":     { "name": "Earth1",  "volume": 85, "pitch": 90,  "verify": "ASSUMED" },
+    "AUD_SE_IMPACT":    { "name": "Blow1",   "volume": 90, "pitch": 95,  "verify": "ASSUMED" },
+    "AUD_SE_FIRE":      { "name": "Fire1",   "volume": 85, "pitch": 100, "verify": "ASSUMED" },
+    "AUD_SE_GLASS":     { "name": "Break",   "volume": 85, "pitch": 100, "verify": "ASSUMED" },
+    "AUD_SE_ITEM":      { "name": "Item1",   "volume": 75, "pitch": 100, "verify": "ASSUMED" },
+    "AUD_SE_UI":        { "name": "Cursor1", "volume": 70, "pitch": 100, "verify": "ASSUMED" },
+    "AUD_SE_SEARCH":    { "name": "Book2",   "volume": 70, "pitch": 95,  "verify": "ASSUMED" }
+  },
+  "map_profiles": {
+    "_doc": "map id -> which BGM slot plays, by time block (1 dawn .. 5 night).",
+    "10": { "1": "AUD_BGM_EXTERIOR", "2": "AUD_BGM_EXTERIOR", "3": "AUD_BGM_EXTERIOR", "4": "AUD_BGM_EXTERIOR", "5": "AUD_BGM_EXTERIOR", "bgs": "AUD_BGS_WIND" },
+    "20": { "1": "AUD_BGM_MANOR_DAY", "2": "AUD_BGM_MANOR_DAY", "3": "AUD_BGM_MANOR_DAY", "4": "AUD_BGM_MANOR_EVENING", "5": "AUD_BGM_MANOR_NIGHT", "bgs": "" },
+    "30": { "1": "AUD_BGM_MANOR_DAY", "2": "AUD_BGM_MANOR_DAY", "3": "AUD_BGM_MANOR_DAY", "4": "AUD_BGM_MANOR_EVENING", "5": "AUD_BGM_MANOR_NIGHT", "bgs": "" },
+    "40": { "1": "AUD_BGM_PASSAGE", "2": "AUD_BGM_PASSAGE", "3": "AUD_BGM_PASSAGE", "4": "AUD_BGM_PASSAGE", "5": "AUD_BGM_PASSAGE", "bgs": "AUD_BGS_PASSAGE" },
+    "50": { "1": "AUD_BGM_CHAPEL", "2": "AUD_BGM_CHAPEL", "3": "AUD_BGM_CHAPEL", "4": "AUD_BGM_CHAPEL", "5": "AUD_BGM_CHAPEL", "bgs": "" },
+    "60": { "1": "AUD_BGM_PASSAGE", "2": "AUD_BGM_PASSAGE", "3": "AUD_BGM_PASSAGE", "4": "AUD_BGM_PASSAGE", "5": "AUD_BGM_PASSAGE", "bgs": "AUD_BGS_PASSAGE" }
+  }
+}

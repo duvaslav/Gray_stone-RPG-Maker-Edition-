@@ -80,6 +80,27 @@ const EXITS = [
   { x: 36, y: 5, to: "MAP_040", name: "EV_STAIR_BASEMENT", text: ["Лестница в подвал.", "Дверь внизу заперта."], switchName: "S_0207_Basement_Access" },
 ];
 
+// Which clues a search point yields, from 25_Clue_Logic. A clue scoped to one
+// culprit is only present in that culprit's run, so it is emitted behind that
+// run's version switch -- the point still works in every other run, it simply
+// has nothing of that kind to find.
+const CULPRIT_SWITCH = {
+  linda: "S_0020_Version_Linda", celeste: "S_0021_Version_Celeste",
+  vera: "S_0022_Version_Vera", beatrice: "S_0023_Version_Beatrice",
+  nika: "S_0024_Version_Nika", agnes: "S_0025_Version_Agnes",
+};
+
+function cluesForPoi(poiId) {
+  return table("25_Clue_Logic")
+    .filter((r) => String(r["физический источник"]).includes(poiId))
+    .map((r) => ({
+      clueId: r.clue_id,
+      itemId: num(r.item_id),
+      scope: String(r.culprit_scope || "Universal").trim(),
+    }))
+    .filter((c) => c.itemId > 0);
+}
+
 function searchPoints() {
   return table("24_Search_Points")
     .filter((r) => r.map_key === "MAP_020_Manor_Ground_Floor")
@@ -148,6 +169,25 @@ function build(reg, ctx) {
     c.comment(`PAT_SEARCH ${p.id}. Costs ${p.ap} AP / ${p.minutes} min exactly once.`);
     const gated = conditionBranch(c, p.condition);
     c.text(text.first, { background: 0 });
+
+    // Award whatever this point actually yields. Several points are
+    // information-only by design (24_Search_Points marks their result type as
+    // historical or access rather than evidence) and award nothing.
+    const yields = cluesForPoi(p.id);
+    for (const y of yields) {
+      const gate = CULPRIT_SWITCH[y.scope.toLowerCase()];
+      if (gate) {
+        c.comment(`${y.clueId} exists only in the ${y.scope} version.`);
+        c.ifSwitch(S(gate));
+          c.varSet(V("V_0023_Clue_Item_ID_Input"), y.itemId);
+          c.callCommon(12);
+        c.endIf();
+      } else {
+        c.varSet(V("V_0023_Clue_Item_ID_Input"), y.itemId);
+        c.callCommon(12);
+      }
+    }
+
     c.comment("Charge time and AP as one atomic step, then bank the result.");
     c.varSet(V("V_0021_Action_Minutes"), p.minutes);
     c.varSet(V("V_0022_Action_AP_Cost"), p.ap);
