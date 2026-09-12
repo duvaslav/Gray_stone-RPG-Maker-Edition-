@@ -13,6 +13,7 @@ const npcSched = require("./50-npc-schedules");
 const interior = require("../lib/interior");
 const INTERIOR_PLANS = require("../data/interior-plans");
 const mapEvents = require("./61-map-events");
+const map010 = require("./70-map010-exterior");
 const POI = require("../data/poi-text");
 const tiles = require("../lib/tiles");
 
@@ -254,6 +255,66 @@ function main() {
       }
       if (fres.skipped.length > 5) console.log(`                ... and ${fres.skipped.length - 5} more`);
     }
+  }
+
+  // --- MAP_010 estate exterior --------------------------------------------
+  // Open ground rather than carved rooms, so it is painted by its own generator.
+  // Everything downstream -- events, NPC placement, the reachability audit --
+  // works off the same shape, with one synthetic "room" covering the grounds.
+  {
+    const { map } = map010.build();
+    const flags = flagsFor(map010.TILESET_ID);
+    const floorOf = {};
+    for (let y = 0; y < map.height; y++) {
+      for (let x = 0; x < map.width; x++) if (map.isWalkable(x, y, flags)) floorOf[`${x},${y}`] = "grounds";
+    }
+    const ctx = {
+      map, floorOf, protectedCells: new Set(), reserved: new Set(),
+      B: (k) => require("../lib/tiles").resolve("outside", k).id,
+      plan: { mapKey: "MAP_010_Estate_Exterior", mapId: 10, order: ["grounds"], tilesetId: map010.TILESET_ID },
+    };
+
+    const evb = mapEvents.build(reg, {
+      mapKey: "MAP_010_Estate_Exterior", mapId: 10, ctx,
+      poiText: POI.text, poiTile: POI.tile, poiFloorLevel: POI.floorLevel,
+    });
+    ctx.reserved = evb.reserved;
+    for (const t of mapEvents.transfersFrom("MAP_010_Estate_Exterior")) ctx.protectedCells.add(`${t.x},${t.y}`);
+
+    const blocksFinally = (ev) => {
+      const last = ev.pages[ev.pages.length - 1];
+      return last.priorityType === 1 && !last.through;
+    };
+    const preBlocked = new Set();
+    for (const ev of evb.events) if (blocksFinally(ev)) preBlocked.add(`${ev.x},${ev.y}`);
+
+    const alloc = npcSched.allocateSwitches();
+    const onThisMap = Object.values(alloc).map((a) => a.inst)
+      .filter((i) => i.mapKey === "MAP_010_Estate_Exterior")
+      .sort((a, b) => a.eventName.localeCompare(b.eventName));
+    ctx.connectivity = { flags, start: { x: 26, y: 20 }, blocked: preBlocked };
+    const movedAnchors = npcSched.spreadAnchors(onThisMap, ctx);
+    const npcEvents = npcSched.buildInstanceEvents(reg, "MAP_010_Estate_Exterior", alloc, ctx);
+
+    for (const ev of evb.events) map.addEvent(ev);
+    for (const ev of npcEvents) map.addEvent(ev);
+
+    const blockers = new Set();
+    for (const ev of map.events) if (ev && blocksFinally(ev)) blockers.add(`${ev.x},${ev.y}`);
+    const reach = interior.reachableAvoiding(map, flags, { x: 26, y: 20 }, blockers);
+    const K = (x, y) => y * map.width + x;
+    for (const t of mapEvents.transfersFrom("MAP_010_Estate_Exterior")) {
+      if (!reach.has(K(t.x, t.y))) {
+        throw new Error(`MAP_010: transfer ${t.id} at (${t.x},${t.y}) is not reachable from the front door`);
+      }
+    }
+
+    write("Map010.json", map.toJSON());
+    registerMap(10, "MAP_010_Estate_Exterior", 0, 10);
+    console.log(`  Map010   ${map.width}x${map.height}  ${evb.events.length + npcEvents.length} events ` +
+      `(${npcEvents.length} NPC, ${mapEvents.transfersFrom("MAP_010_Estate_Exterior").length} transfers), ` +
+      `${reach.size} reachable`);
+    if (movedAnchors.length) console.log(`              ${movedAnchors.length} NPC anchor(s) relocated`);
   }
 
   write("MapInfos.json", mapInfos);

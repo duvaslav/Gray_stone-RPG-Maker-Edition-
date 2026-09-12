@@ -361,6 +361,51 @@ function main() {
     if (names.length) info("PLUGINS", `${names.length} plugin(s) declared, all files present`, "plugins.js");
   }
 
+  // ---- reciprocal transfers
+  // A door you can walk through one way and not back is a softlock waiting to
+  // happen, so every cross-map transfer must have a partner returning from the
+  // cell it lands on.
+  {
+    const links = [];
+    const collect = (root, fromMap) => walkLists(root, (list) => {
+      for (const c of list) {
+        if (c.code === 201 && c.parameters[0] === 0) {
+          links.push({ from: fromMap, to: c.parameters[1], x: c.parameters[2], y: c.parameters[3] });
+        }
+      }
+    });
+    for (const id of mapIds) if (maps[id]) collect(maps[id], id);
+
+    const crossings = links.filter((l) => l.to !== l.from);
+    // A map nothing transfers INTO is a one-way entry point by construction --
+    // the cinematic prologue is the case here. Demanding a return route from it
+    // would be demanding a way back into a cutscene.
+    const oneWaySource = (mapId) => !crossings.some((o) => o.to === mapId);
+    let missing = 0;
+    for (const l of crossings) {
+      if (oneWaySource(l.from)) continue;
+      // Is there a transfer on the destination map that comes back here, placed
+      // at or beside the cell this one arrives on?
+      const back = crossings.some((o) =>
+        o.from === l.to && o.to === l.from &&
+        Math.abs(o.x - l.x) + Math.abs(o.y - l.y) >= 0 &&
+        maps[l.to] && (maps[l.to].events || []).some((ev) =>
+          ev && Math.abs(ev.x - l.x) + Math.abs(ev.y - l.y) <= 1 &&
+          ev.pages.some((pg) => pg.list.some((cm) => cm.code === 201 && cm.parameters[1] === l.from))));
+      if (!back) {
+        warn("TRANSFER_NO_RETURN",
+          `map ${l.from} -> map ${l.to} (${l.x},${l.y}) has no transfer back within one cell of the arrival point`,
+          `Map${String(l.from).padStart(3, "0")}`);
+        missing++;
+      }
+    }
+    if (crossings.length) {
+      info("TRANSFERS_RECIPROCAL",
+        `${crossings.length - missing} of ${crossings.length} cross-map transfers have a return route`,
+        "transfers");
+    }
+  }
+
   // ---- tileset provenance
   const synthesized = Array.isArray(tilesets) &&
     tilesets.some((t) => t && String(t.note || "").includes("<graystone_synthesized_flags>"));
