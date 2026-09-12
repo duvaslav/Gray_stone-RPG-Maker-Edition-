@@ -526,6 +526,55 @@ function main() {
     eq("no inactive instance shows a sprite", visible, 0);
   });
 
+  // ------------------------------------------------------------- DIALOGUE
+  scenario("Every dialogue scene runs to completion and marks itself played", () => {
+    const scenes = db.commonEvents.filter((e) => e && /^CE_DLG_SCENE_/.test(e.name));
+    check("dialogue scenes were generated", scenes.length === 15, `${scenes.length} scenes`);
+    for (const sc of scenes) {
+      const g = newGame(db, 4000 + sc.id);
+      g.variables.setValue(V.V_0006_Culprit_ID, 3);
+      g.switches.setValue(S.S_0002_Culprit_Locked, true);
+      let ok = true, msg = "";
+      try { callCommonEvent(g, sc.id); } catch (e) { ok = false; msg = e.message; }
+      check(`${sc.name} terminates`, ok, msg);
+      if (ok) check(`  ${sc.name} shows dialogue`, g.messages.length > 0, `${g.messages.length} windows`);
+    }
+  });
+
+  scenario("A dialogue scene never replays", () => {
+    const scene = db.commonEvents.find((e) => e && e.name === "CE_DLG_SCENE_MARLENA_FILES");
+    check("scene found", !!scene);
+    const g = newGame(db, 4100);
+    callCommonEvent(g, scene.id);
+    const first = g.messages.length;
+    check("it played", first > 0, `${first} windows`);
+    callCommonEvent(g, scene.id);
+    eq("a second call shows nothing new", g.messages.length, first);
+  });
+
+  scenario("Dialogue evidence is granted once, however the scene is reached", () => {
+    const scene = db.commonEvents.find((e) => e && e.name === "CE_DLG_SCENE_LINDA_SHIFTS");
+    const g = newGame(db, 4200);
+    callCommonEvent(g, scene.id);
+    const afterFirst = JSON.stringify(g.items);
+    check("the scene granted evidence", Object.keys(g.items).length > 0, afterFirst);
+    // Force the scene guard off, as a reloaded save or a second trigger would.
+    g.switches.setValue(1109, false);
+    callCommonEvent(g, scene.id);
+    eq("no duplicate evidence", JSON.stringify(g.items), afterFirst);
+  });
+
+  scenario("Dialogue speaker names and faces survive generation", () => {
+    const g = newGame(db, 4300);
+    const scene = db.commonEvents.find((e) => e && e.name === "CE_DLG_SCENE_ROLAND_PACKET");
+    callCommonEvent(g, scene.id);
+    const named = g.messages.filter((m) => m.speaker);
+    const faced = g.messages.filter((m) => m.faceName);
+    check("lines carry a speaker name", named.length > 0, `${named.length} of ${g.messages.length}`);
+    check("lines carry a face", faced.length > 0, `${faced.length} of ${g.messages.length}`);
+    check("face indices are valid", g.messages.every((m) => m.faceIndex >= 0 && m.faceIndex <= 7));
+  });
+
   // ----------------------------------------------------- INTERPRETER SAFETY
   scenario("Every Common Event terminates from a cold start", () => {
     for (let id = 1; id <= 25; id++) {

@@ -5,6 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const db = require("./00-database");
 const ces = require("./10-common-events");
+const dialogue = require("./80-dialogue");
 const registry = require("../lib/registry");
 const map005 = require("./20-map005-prologue");
 const map005ev = require("./21-map005-events");
@@ -141,7 +142,14 @@ function main() {
   write("Classes.json", db.buildClasses());
   write("Items.json", db.buildItems().items);
   write("Tilesets.json", ts.list);
-  write("CommonEvents.json", ces.build(reg));
+  // Common Events: the core system at 1..25, one dialogue scene per id from 100.
+  const commonEvents = ces.build(reg);
+  const dlg = dialogue.build(reg);
+  for (const ev of dlg.events) {
+    while (commonEvents.length <= ev.id) commonEvents.push(null);
+    commonEvents[ev.id] = { id: ev.id, name: ev.name, trigger: ev.trigger, switchId: ev.switchId, list: ev.list };
+  }
+  write("CommonEvents.json", commonEvents);
 
   // --- maps ---------------------------------------------------------------
   const mapInfos = [null];
@@ -339,7 +347,12 @@ function main() {
   console.log(`  switches  ${reg.switches.names.length - 1} slots, ${Object.keys(reg.switches.byName).length} named`);
   console.log(`  variables ${reg.variables.names.length - 1} slots, ${Object.keys(reg.variables.byName).length} named`);
   console.log(`  items     ${db.buildItems().items.length - 1}`);
-  console.log(`  common events 25`);
+  console.log(`  common events ${25 + dlg.events.length} (25 core + ${dlg.events.length} dialogue scenes, ${dlg.events.reduce((a, e) => a + e.list.length, 0)} commands)`);
+  if (dlg.problems.length) {
+    const uniq = [...new Set(dlg.problems)];
+    console.log(`  dialogue: ${uniq.length} unresolved reference(s)`);
+    for (const p of uniq) console.log(`    ${p}`);
+  }
   const assumed = tiles.assumedBindings();
   if (assumed.length) console.log(`  tile bindings still ASSUMED: ${assumed.length} (see docs/ASSET_SETUP.md)`);
   return reg;

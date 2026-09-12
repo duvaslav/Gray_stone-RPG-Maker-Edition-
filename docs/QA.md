@@ -63,7 +63,7 @@ wins, ★ skipped). That is a faithful static model, but it is still static.
 
 ```
 node tools/validate/validate.js   ->  0 errors, 0 warnings, 4 notes
-node tools/sim/regression.js      ->  179 checks, 28 scenarios, 0 failures
+node tools/sim/regression.js      ->  223 checks, 32 scenarios, 0 failures
 node tools/sim/vertical-slice.js  ->  PASSED end to end
 node tools/verify_assets.js       ->  44 references, 0 resolvable (assets absent)
 node tools/pick_tiles.js         ->  contact sheets (needs hydrated assets)
@@ -330,6 +330,48 @@ tile from there into an 1896 manor is an anachronism waiting to happen.
 the bindings file header. A period-appropriate carpet can be added later from a
 sheet that has one.
 
+### D-24 — `Strategy_Quality` is off by one between two sheets — **High**
+
+`38_Ending_Matrix` and `05_Variables_Enums` disagree by exactly one:
+
+| value | 38_Ending_Matrix | 05_Variables_Enums |
+|---|---|---|
+| 0 | invalid | не рассчитано |
+| 1 | weak | invalid |
+| 2 | partial | weak |
+| 3 | clean | partial |
+| 4 | — | clean |
+
+The dialogue commands branch on `strategy_quality = clean`. Read against the enum
+table that is 4; against the matrix it is 3. Since `CE_019..021` clamp to 0..3,
+the enum reading would make the branch **permanently unreachable** and the best
+outcome of the Evelyn audit impossible to see.
+
+**Resolution:** the matrix wins. It is the resolver's own data, it is complete —
+78 rows covering every culprit × strategy × quality — and the scoring events
+already produce 0..3 to match. The enum table's extra "not calculated" at 0
+shifts everything up and is redundant, since "invalid" already means no usable
+strategy. `clean` is 3.
+
+### D-25 — Two clue references in the dialogue do not exist — **Medium**
+
+`53_Dialogue_Event_Commands` hands `CE_012_Add_Evidence` two ids that are in
+neither `23_Evidence_Items` nor `25_Clue_Logic`:
+
+- **`item_chapel_night_register`** — the Edrian confession grants both this *and*
+  `clue_chapel_night_entry`, and `25_Clue_Logic` names that scene as the source
+  of `clue_chapel_night_entry`. It is a duplicate alias for the same clue, so it
+  resolves to it and the scene grants it exactly once.
+- **`item_creditor_letters`** — no evidence item of that name exists anywhere,
+  and the Evelyn audit grants nothing else. Genuinely dangling.
+
+**Resolution:** the alias is mapped; the dangling one is **not invented**. The
+scene plays, records the gap in a comment, and the build reports it. Granting the
+wrong clue would be worse than granting none — but this does mean the Evelyn
+audit currently yields no evidence, and it needs a decision: either an evidence
+item for the creditor letters, or confirmation that the scene is meant to yield
+none.
+
 ---
 
 ## Defects in the tests, not the game
@@ -358,6 +400,7 @@ Honest list of what is stubbed rather than implemented.
 |---|---|
 | CE_009 NPC schedules | **generated** for all 14 NPCs and 59 instances, singleton proven. Only MAP_020's 36 instances are placed as events; the other 23 await their maps |
 | CE_013 present evidence, CE_014 relationships | structure and clean exits; branch trees not generated |
+| Dialogue scenes | **generated**: 15 scenes, 5927 commands, each with a replay guard and verified to terminate |
 | CE_016 mandatory events, CE_017 repeat dialogue | fall through safely; dependency graph not generated |
 | CE_019–CE_022 quality rules | clamp correctly to 0..3 and always resolve; the scoring rules themselves are not generated |
 | MAP_010, MAP_030, MAP_040, MAP_050, MAP_060 | not built. Their routes are **gates that say so in character**, never silent dead ends or transfers to a map that does not exist |

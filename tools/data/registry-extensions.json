@@ -74,6 +74,11 @@
       "name": "V_0035_Temp_Instance_Count",
       "init": 0,
       "why": "NPC singleton assertion counter (CE_009)"
+    },
+    "36": {
+      "name": "V_0036_Leonard_Power_Position",
+      "init": 0,
+      "why": "53_Dialogue_Event_Commands branches the Evelyn audit on 'leonard_power_position' (disclosed/legal/hidden/renounce). Never allocated; 0 = unresolved."
     }
   }
 }
