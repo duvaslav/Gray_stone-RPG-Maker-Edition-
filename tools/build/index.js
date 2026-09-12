@@ -8,10 +8,12 @@ const ces = require("./10-common-events");
 const registry = require("../lib/registry");
 const map005 = require("./20-map005-prologue");
 const map005ev = require("./21-map005-events");
-const map020 = require("./30-map020-ground");
-const map020furnish = require("./31-map020-furnish");
-const map020ev = require("./32-map020-events");
+const furnishing = require("./62-furnish");
 const npcSched = require("./50-npc-schedules");
+const interior = require("../lib/interior");
+const INTERIOR_PLANS = require("../data/interior-plans");
+const mapEvents = require("./61-map-events");
+const POI = require("../data/poi-text");
 const tiles = require("../lib/tiles");
 
 const ROOT = path.join(__dirname, "..", "..");
@@ -161,48 +163,96 @@ function main() {
     console.log(`  Map005    ${map.width}x${map.height}, ${map.events.length - 1} events, collision matches blueprint`);
   }
 
-  {
-    const ctx = map020.build();
-    const evb = map020ev.build(reg, ctx);
-    // Interactive furniture is an event, so the map must not also paint a tile
-    // in that cell -- one object per cell, never a tile and an event disagreeing.
-    ctx.reserved = evb.reserved;
-    const fres = map020furnish.furnish(ctx);
+  // --- interior maps ------------------------------------------------------
+  // One algorithm for all of them (tools/lib/interior.js); each map is a plan.
+  // The build FAILS if any walkable cell becomes unreachable, so furniture,
+  // search points and NPCs can never quietly seal a room.
+  const inboundArrival = (mapKey) => {
+    const row = require("../lib/spec").table("09_Doors_Transfers")
+      .find((r) => r["целевая карта"] === mapKey);
+    return row ? { x: Number(row.target_x), y: Number(row.target_y) } : null;
+  };
 
-    // NPC instances. Anchors are spread BEFORE the events are built so no two
-    // people share a cell, and furniture cells are known so nobody is placed
-    // inside a bookcase.
-    const flagsNow = flagsFor(map020.TILESET_ID);
+  for (const plan of Object.values(INTERIOR_PLANS)) {
+    const ctx = interior.build(plan);
+    const flags = flagsFor(plan.tilesetId);
+
+    // Sweep from where the player actually arrives, falling back to the first
+    // room's floor when nothing transfers into this map yet.
+    const arrival = inboundArrival(plan.mapKey);
+    const fallback = Object.entries(ctx.floorOf)
+      .find(([, r]) => r === plan.order[0])[0].split(",").map(Number);
+    const start = arrival && ctx.floorOf[`${arrival.x},${arrival.y}`]
+      ? arrival : { x: fallback[0], y: fallback[1] };
+
+    const evb = mapEvents.build(reg, {
+      mapKey: plan.mapKey, mapId: plan.mapId, ctx,
+      poiText: POI.text, poiTile: POI.tile, poiFloorLevel: POI.floorLevel,
+    });
+    ctx.reserved = evb.reserved;
+
+    const fres = furnishing.furnish(ctx);
     ctx.blockedByFurniture = new Set(
-      fres.placed.filter((p) => p.z === 1 && !ctx.map.isWalkable(p.x, p.y, flagsNow)).map((p) => `${p.x},${p.y}`)
+      fres.placed.filter((f) => f.z === 1 && !ctx.map.isWalkable(f.x, f.y, flags)).map((f) => `${f.x},${f.y}`)
     );
+
+    // Everything already standing in the way before NPCs are placed.
+    // An event blocks only in the state it ENDS in: a locked door's last page is
+    // the unlocked one, so it must not count as a permanent wall, while a search
+    // point and an NPC stay solid on their last page and do.
+    const blocksFinally = (ev) => {
+      const last = ev.pages[ev.pages.length - 1];
+      return last.priorityType === 1 && !last.through;
+    };
+    const preBlocked = new Set(ctx.blockedByFurniture);
+    for (const ev of evb.events) if (blocksFinally(ev)) preBlocked.add(`${ev.x},${ev.y}`);
+
     const alloc = npcSched.allocateSwitches();
-    const onThisMap = Object.values(alloc)
-      .map((a) => a.inst)
-      .filter((i) => i.mapKey === "MAP_020_Manor_Ground_Floor")
+    const onThisMap = Object.values(alloc).map((a) => a.inst)
+      .filter((i) => i.mapKey === plan.mapKey)
       .sort((a, b) => a.eventName.localeCompare(b.eventName));
+    ctx.connectivity = { flags, start, blocked: preBlocked };
     const movedAnchors = npcSched.spreadAnchors(onThisMap, ctx);
-    const npcEvents = npcSched.buildInstanceEvents(reg, "MAP_020_Manor_Ground_Floor", alloc, ctx);
+    const npcEvents = npcSched.buildInstanceEvents(reg, plan.mapKey, alloc, ctx);
 
     for (const ev of evb.events) ctx.map.addEvent(ev);
     for (const ev of npcEvents) ctx.map.addEvent(ev);
 
-    const flags = flagsFor(map020.TILESET_ID);
-    const reach = ctx.map.reachable(22, 31, flags);
-    const K = (x, y) => y * ctx.map.width + x;
-    const dead = [];
-    for (const [k, room] of Object.entries(ctx.floorOf)) {
-      const [x, y] = k.split(",").map(Number);
-      if (reach.has(K(x, y))) continue;
-      if (ctx.map.isWalkable(x, y, flags)) dead.push(`${k} [${room}]`);
+    // Reachability with EVENTS taken into account. Tile passability alone does
+    // not see a blocking search point or NPC, so one object parked in a
+    // one-tile-wide passage would cut the map in two and still pass every
+    // tile-only check.
+    const eventBlockers = new Set(ctx.blockedByFurniture);
+    for (const ev of ctx.map.events) {
+      if (!ev) continue;
+      if (blocksFinally(ev)) eventBlockers.add(`${ev.x},${ev.y}`);
     }
-    if (dead.length) throw new Error(`MAP_020 has ${dead.length} walkable but unreachable cells: ${dead.slice(0, 10).join(", ")}`);
 
-    write("Map020.json", ctx.map.toJSON());
-    registerMap(20, "MAP_020_Manor_Ground_Floor", 0, 2);
-    console.log(`  Map020    ${ctx.map.width}x${ctx.map.height}, ${evb.events.length + npcEvents.length} events (${npcEvents.length} NPC instances), ${fres.placed.length} furnishings, ${reach.size} reachable cells, 0 dead cells`);
+    const a = interior.audit(ctx, flags, start, eventBlockers);
+    const dead = a.dead.filter((d) => !eventBlockers.has(d.split(" ")[0]));
+    if (dead.length) {
+      throw new Error(`${plan.mapKey}: ${dead.length} walkable but unreachable cells: ${dead.slice(0, 8).join(", ")}`);
+    }
+    if (a.unreachable.length) {
+      throw new Error(`${plan.mapKey}: rooms sealed off: ${a.unreachable.join(", ")}`);
+    }
+
+    const file = `Map${String(plan.mapId).padStart(3, "0")}.json`;
+    write(file, ctx.map.toJSON());
+    registerMap(plan.mapId, plan.mapKey, 0, plan.mapId);
+    console.log(`  ${file.replace(".json", "")}   ${ctx.map.width}x${ctx.map.height}  ` +
+      `${evb.events.length + npcEvents.length} events (${npcEvents.length} NPC, ` +
+      `${mapEvents.transfersFrom(plan.mapKey).length} transfers), ` +
+      `${fres.placed.length} furnishings, ${a.reach.size} reachable, 0 dead`);
     if (movedAnchors.length) {
-      console.log(`            ${movedAnchors.length} NPC anchor(s) spread off a shared cell (D-12)`);
+      console.log(`              ${movedAnchors.length} NPC anchor(s) relocated (D-12 / connectivity)`);
+    }
+    if (fres.skipped.length) {
+      console.log(`              ${fres.skipped.length} furnishing(s) skipped:`);
+      for (const sk of fres.skipped.slice(0, 5)) {
+        console.log(`                ${sk.room} (${sk.x},${sk.y}) ${sk.tile} - ${sk.why}`);
+      }
+      if (fres.skipped.length > 5) console.log(`                ... and ${fres.skipped.length - 5} more`);
     }
   }
 

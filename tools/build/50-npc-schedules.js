@@ -101,21 +101,75 @@ function spreadAnchors(list, ctx) {
     return true;
   };
 
+  // An NPC blocks the cell it stands on. In a small room already lined with
+  // furniture, a body dropped in the wrong place can seal a corner the player
+  // can see but never reach -- and no tile-level check would notice, because the
+  // tiles are fine. So a candidate cell is REJECTED if standing there would cut
+  // anything off.
+  const connectivity = ctx.connectivity;   // { flags, start, blocked:Set } or null
+  const wouldDisconnect = (x, y) => {
+    if (!connectivity) return false;
+    const { flags, start, blocked } = connectivity;
+    const before = reachCount(blocked);
+    blocked.add(`${x},${y}`);
+    const after = reachCount(blocked);
+    blocked.delete(`${x},${y}`);
+    // Standing on a reachable cell costs exactly that cell. Anything more means
+    // the placement severed a route.
+    return before - after > 1;
+  };
+  const reachCount = (blocked) => {
+    const { flags, start } = connectivity;
+    const map = ctx.map;
+    const K = (px, py) => py * map.width + px;
+    const seen = new Set();
+    if (!map.isWalkable(start.x, start.y, flags) || blocked.has(`${start.x},${start.y}`)) return 0;
+    const stack = [[start.x, start.y]];
+    seen.add(K(start.x, start.y));
+    while (stack.length) {
+      const [cx, cy] = stack.pop();
+      for (const [dx, dy] of [[0, -1], [0, 1], [-1, 0], [1, 0]]) {
+        const nx = cx + dx, ny = cy + dy;
+        if (nx < 0 || ny < 0 || nx >= map.width || ny >= map.height) continue;
+        if (seen.has(K(nx, ny))) continue;
+        if (!map.isWalkable(nx, ny, flags)) continue;
+        if (blocked.has(`${nx},${ny}`)) continue;
+        seen.add(K(nx, ny));
+        stack.push([nx, ny]);
+      }
+    }
+    return seen.size;
+  };
+
   for (const inst of list) {
     const room = ctx.floorOf[`${inst.x},${inst.y}`];
-    if (!room) continue;                 // not on this map's floor; left as-is
+    // An anchor that is not on floor at all -- because a wall moved under it when
+    // private rooms kept their walls, say -- must still be placed. Leaving it
+    // where it is was silently letting two NPCs share an invalid cell.
+    const anyRoom = !room;
     let placed = false;
     for (const [dx, dy] of RING) {
       const x = inst.x + dx, y = inst.y + dy;
-      if (!usable(x, y, room)) continue;
-      if (dx || dy) moved.push({ eventName: inst.eventName, from: [inst.x, inst.y], to: [x, y], room });
+      if (anyRoom) {
+        const owner = ctx.floorOf[`${x},${y}`];
+        if (!owner || !usable(x, y, owner)) continue;
+      } else if (!usable(x, y, room)) continue;
+      if (wouldDisconnect(x, y)) continue;
+      if (dx || dy) {
+        moved.push({ eventName: inst.eventName, from: [inst.x, inst.y], to: [x, y],
+                     room: room || ctx.floorOf[`${x},${y}`], offFloor: anyRoom });
+      }
       inst.x = x; inst.y = y;
       taken.add(`${x},${y}`);
+      if (connectivity) connectivity.blocked.add(`${x},${y}`);
       placed = true;
       break;
     }
     if (!placed) {
-      throw new Error(`no free cell near the ${room} anchor for ${inst.eventName}`);
+      throw new Error(
+        `${inst.eventName}: no cell near the ${room || "off-floor"} anchor is both free and safe to stand on ` +
+        `(every candidate is furniture, a doorway, taken, or would seal part of the room). ` +
+        `Reduce the furnishing in ${room} or widen it.`);
     }
   }
   return moved;

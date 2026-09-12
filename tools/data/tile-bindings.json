@@ -300,6 +300,14 @@
         "row": 1,
         "verify": "ASSUMED",
         "blocked": false
+      },
+      "BED": {
+        "sheet": "B",
+        "col": 8,
+        "row": 4,
+        "verify": "SHEET_READ",
+        "blocked": true,
+        "note": "Inside_B row 4 is the bed run"
       }
     }
   }
