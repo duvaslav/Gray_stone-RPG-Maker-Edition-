@@ -413,16 +413,7 @@ function build(reg) {
   }
 
   // ---------------------------------------------------------------- CE_015
-  {
-    const c = new CmdList();
-    c.comment("CE_015 Recalculate derived states. Cheap no-op unless the dirty flag is set.");
-    c.ifSwitch(S("S_0003_Derived_States_Dirty"), false);
-      c.exitEvent();
-    c.endIf();
-    c.comment("<<GENERATED_DERIVED_RULES>>");
-    c.switchOff(S("S_0003_Derived_States_Dirty"));
-    add(15, "CE_015_Recalculate_Derived_States", c.done());
-  }
+  add(15, "CE_015_Recalculate_Derived_States", require("./86-strategy-scoring").buildDerivedStates(reg));
 
   // ---------------------------------------------------------------- CE_016
   {
@@ -464,49 +455,15 @@ function build(reg) {
   }
 
   // ------------------------------------------------- CE_019..021 strategies
-  const strategies = [
-    [19, "CE_019_Evaluate_Official"],
-    [20, "CE_020_Evaluate_Ambush"],
-    [21, "CE_021_Evaluate_Lockdown"],
-  ];
-  for (const [id, name] of strategies) {
-    const c = new CmdList();
-    c.comment(`${name}. Always yields V8 in 0..3 -- a weak plan scores low, it never blocks.`);
-    c.callCommon(15);
-    c.varSet(V("V_0008_Strategy_Quality"), 0);
-    c.comment("<<GENERATED_QUALITY_RULES>>");
-    c.ifVar(V("V_0008_Strategy_Quality"), 3, 3); // > 3
-      c.varSet(V("V_0008_Strategy_Quality"), 3);
-    c.endIf();
-    c.ifVar(V("V_0008_Strategy_Quality"), 0, 4); // < 0
-      c.varSet(V("V_0008_Strategy_Quality"), 0);
-    c.endIf();
-    add(id, name, c.done());
+  {
+    const sc = require("./86-strategy-scoring");
+    add(19, "CE_019_Evaluate_Official", sc.buildOfficial(reg));
+    add(20, "CE_020_Evaluate_Ambush", sc.buildAmbush(reg));
+    add(21, "CE_021_Evaluate_Lockdown", sc.buildLockdown(reg));
   }
 
   // ---------------------------------------------------------------- CE_022
-  {
-    const c = new CmdList();
-    c.comment([
-      "CE_022 Final resolver. Total by construction: strategy 0 (the player never",
-      "chose one) resolves to a per-culprit NONE leaf, so every Culprit x Strategy",
-      "x Quality combination lands on a result. V30 > 0 is asserted before ending.",
-    ].join("\n"));
-    c.callCommon(15);
-    c.ifVar(V("V_0007_Strategy_ID"), 1, 0); c.callCommon(19); c.endIf();
-    c.ifVar(V("V_0007_Strategy_ID"), 2, 0); c.callCommon(20); c.endIf();
-    c.ifVar(V("V_0007_Strategy_ID"), 3, 0); c.callCommon(21); c.endIf();
-    c.varFromVar(V("V_0009_Effective_Strategy_Quality"), V("V_0008_Strategy_Quality"), 0);
-    c.varSet(V("V_0030_Final_Result_ID"), 0);
-    c.comment("<<GENERATED_ENDING_MATRIX>> 6 culprits x 4 strategy states x 4 qualities");
-    c.comment("Fallback leaf: no generated branch matched, still produce a result.");
-    c.ifVar(V("V_0030_Final_Result_ID"), 0, 0);
-      c.varFromVar(V("V_0030_Final_Result_ID"), V("V_0006_Culprit_ID"), 0);
-      c.push(C.VARIABLES, [V("V_0030_Final_Result_ID"), V("V_0030_Final_Result_ID"), 3, 0, 100]);
-    c.endIf();
-    c.label("END_RESOLVED");
-    add(22, "CE_022_Final_Resolver", c.done());
-  }
+  add(22, "CE_022_Final_Resolver", require("./85-endings").build(reg).list);
 
   // ---------------------------------------------------------------- CE_023
   {

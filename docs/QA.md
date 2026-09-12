@@ -63,7 +63,7 @@ wins, ★ skipped). That is a faithful static model, but it is still static.
 
 ```
 node tools/validate/validate.js   ->  0 errors, 0 warnings, 4 notes
-node tools/sim/regression.js      ->  223 checks, 32 scenarios, 0 failures
+node tools/sim/regression.js      ->  235 checks, 36 scenarios, 0 failures
 node tools/sim/vertical-slice.js  ->  PASSED end to end
 node tools/verify_assets.js       ->  44 references, 0 resolvable (assets absent)
 node tools/pick_tiles.js         ->  contact sheets (needs hydrated assets)
@@ -372,6 +372,31 @@ audit currently yields no evidence, and it needs a decision: either an evidence
 item for the creditor letters, or confirmation that the scene is meant to yield
 none.
 
+### D-26 — Strategy scoring was a stub, so 60 of 78 endings were unreachable — **Critical**
+
+Found by tightening the ending test from "produces a result" to "produces a
+DISTINCT result". `CE_019..021` set `Strategy_Quality` to 0 and then contained
+only a `<<GENERATED_QUALITY_RULES>>` marker, so every run scored 0 whatever the
+player did. `CE_022` then always took the quality-0 row: **24 distinct endings out
+of 78**, and the entire clean/partial/weak half of the matrix was dead content.
+
+The earlier test passed because it wrote `Strategy_Quality` directly — and
+`CE_019..021` promptly overwrote it. A test that injects a value the system
+recomputes proves nothing.
+
+**Resolution:** `CE_015` now computes the six derived states the scoring reads
+(evidence core, reliable witness, victim secured, ally ready, keys controlled,
+passages controlled), and `CE_019..021` score from them. The tests drive quality
+through that state instead of writing it.
+
+Note on authorship: `06_Common_Events` states the scoring in prose ("+1
+ally_ready", "apply staff trust threshold modifier without exceeding 3") and
+`37_Ending_Resolver` lists steps without formulas, so **the thresholds are a
+design decision made here, not a transcription.** They are collected in one table
+in `tools/build/86-strategy-scoring.js` to be tuned after play. Newly allocated
+for the same reason: six derived-state switches and `V_0038_Accused_ID`, because
+nothing recorded who the player actually accused.
+
 ---
 
 ## Defects in the tests, not the game
@@ -401,6 +426,8 @@ Honest list of what is stubbed rather than implemented.
 | CE_009 NPC schedules | **generated** for all 14 NPCs and 59 instances, singleton proven. Only MAP_020's 36 instances are placed as events; the other 23 await their maps |
 | CE_013 present evidence, CE_014 relationships | structure and clean exits; branch trees not generated |
 | Dialogue scenes | **generated**: 15 scenes, 5927 commands, each with a replay guard and verified to terminate |
+| Ending resolver (CE_022) | **generated** from all 78 matrix rows; every combination resolves to its own distinct ending, none falls through to the fallback |
+| Strategy scoring (CE_019-021) + derived states (CE_015) | **implemented**; all four qualities reachable for each strategy |
 | CE_016 mandatory events, CE_017 repeat dialogue | fall through safely; dependency graph not generated |
 | CE_019–CE_022 quality rules | clamp correctly to 0..3 and always resolve; the scoring rules themselves are not generated |
 | MAP_010, MAP_030, MAP_040, MAP_050, MAP_060 | not built. Their routes are **gates that say so in character**, never silent dead ends or transfers to a map that does not exist |

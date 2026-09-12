@@ -103,6 +103,14 @@ function build() {
   const resolveSwitch = (name, npc) => resolve(sw, name, npc);
   const resolveVariable = (name, npc) => resolve(vr, name, npc);
 
+  // One switch per ending plus a global resolved flag (1200+). 38_Ending_Matrix
+  // names them in its "switches" column but the workbook allocates none.
+  {
+    const end = require("../build/85-endings").allocate();
+    put(sw, end.resolvedSwitchId, end.resolvedSwitchName);
+    for (const r of end.list) put(sw, end.switchId[r.endingId], end.switchName[r.endingId]);
+  }
+
   // Day_N_Started / Day_N_Complete resolve by number.
   const dayStarted = (d) => S(`S_0${99 + d}_Day_${d}_Started`);
   const dayComplete = (d) => S(`S_0${119 + d}_Day_${d}_Complete`);

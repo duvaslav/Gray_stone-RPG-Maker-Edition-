@@ -47,6 +47,30 @@
     "17": {
       "name": "S_0017_Map_Entry_Pending",
       "why": "PAT_MAP_ENTER guard; GrayStone_Core re-arms it in Game_Map.setup so a load refreshes ambience exactly like a transfer"
+    },
+    "26": {
+      "name": "S_0026_Derived_Evidence_Core_Complete",
+      "why": "CE_015 computes it, CE_019 reads it; never allocated"
+    },
+    "27": {
+      "name": "S_0027_Derived_Reliable_Witness",
+      "why": "CE_015 computes it, CE_019 reads it; never allocated"
+    },
+    "28": {
+      "name": "S_0028_Derived_Ally_Ready",
+      "why": "CE_015 computes it, CE_020 reads it; never allocated"
+    },
+    "29": {
+      "name": "S_0029_Derived_Victim_Secured",
+      "why": "CE_015 computes it, CE_020/021 read it; never allocated"
+    },
+    "30": {
+      "name": "S_0030_Derived_Keys_Controlled",
+      "why": "CE_021 reads it; never allocated"
+    },
+    "31": {
+      "name": "S_0031_Derived_Passages_Controlled",
+      "why": "CE_021 reads it; never allocated"
     }
   },
   "variables": {
@@ -79,6 +103,16 @@
       "name": "V_0036_Leonard_Power_Position",
       "init": 0,
       "why": "53_Dialogue_Event_Commands branches the Evelyn audit on 'leonard_power_position' (disclosed/legal/hidden/renounce). Never allocated; 0 = unresolved."
+    },
+    "37": {
+      "name": "V_0037_Culprit_Status",
+      "init": 0,
+      "why": "38_Ending_Matrix resolves culprit_status to detained/escaped/free, but 05_Variables_Enums defines no Culprit_Status enum and no variable holds it. 1=detained 2=escaped 3=free."
+    },
+    "38": {
+      "name": "V_0038_Accused_ID",
+      "init": 0,
+      "why": "CE_019 tests whether the accusation is correct, but nothing records WHO was accused. 0 = no accusation, 1..6 = the suspect named."
     }
   }
 }

@@ -409,6 +409,99 @@ function main() {
   });
 
   // ----------------------------------------------------------------- ENDINGS
+  // Drive quality through the game state the scoring events actually read,
+  // rather than writing Strategy_Quality directly -- CE_019..021 recompute it,
+  // so injecting it would test nothing.
+  function setUpQuality(g, strategy, quality, culprit) {
+    g.switches.setValue(S.S_0003_Derived_States_Dirty, true);
+    if (strategy === 1) {
+      g.variables.setValue(V.V_0038_Accused_ID, quality > 0 ? culprit : 0);
+      g.variables.setValue(V.V_0010_Evidence_Core_Count, quality >= 2 ? 9 : 0);
+      g.variables.setValue(V.V_0013_Staff_Trust, quality >= 3 ? 80 : 0);
+    } else if (strategy === 2) {
+      g.switches.setValue(S.S_0705_flag_road_intercept_ready, quality >= 1);
+      g.variables.setValue(V.V_0019_Ambush_Ally_ID, quality >= 2 ? 1 : 0);
+      g.variables.setValue(V.V_0013_Staff_Trust, quality >= 2 ? 80 : 0);
+      g.variables.setValue(V.V_0015_Evelyn_Status, quality >= 3 ? 1 : 0);
+    } else if (strategy === 3) {
+      g.switches.setValue(S.S_0206_Wine_Key, quality >= 1);
+      g.switches.setValue(S.S_0205_Panel_Unlocked, quality >= 2);
+      g.variables.setValue(V.V_0015_Evelyn_Status, quality >= 3 ? 1 : 0);
+      g.variables.setValue(V.V_0013_Staff_Trust, quality >= 3 ? 80 : 0);
+    }
+  }
+
+  scenario("Strategy scoring: every quality 0..3 is reachable for every strategy", () => {
+    for (const strategy of [1, 2, 3]) {
+      const reached = new Set();
+      for (let quality = 0; quality <= 3; quality++) {
+        const g = newGame(db, 700 + strategy * 10 + quality);
+        g.variables.setValue(V.V_0006_Culprit_ID, 2);
+        g.variables.setValue(V.V_0007_Strategy_ID, strategy);
+        setUpQuality(g, strategy, quality, 2);
+        callCommonEvent(g, 18 + strategy);
+        reached.add(g.variables.value(V.V_0008_Strategy_Quality));
+      }
+      eq(`strategy ${strategy} reaches all four qualities`, [...reached].sort(), [0, 1, 2, 3]);
+    }
+  });
+
+  scenario("Official inquiry: naming the wrong woman scores zero whatever the evidence", () => {
+    const g = newGame(db, 760);
+    g.variables.setValue(V.V_0006_Culprit_ID, 3);
+    g.variables.setValue(V.V_0038_Accused_ID, 5);          // wrong suspect
+    g.variables.setValue(V.V_0010_Evidence_Core_Count, 9); // a perfect case
+    g.variables.setValue(V.V_0013_Staff_Trust, 90);
+    g.switches.setValue(S.S_0003_Derived_States_Dirty, true);
+    callCommonEvent(g, 19);
+    eq("quality", g.variables.value(V.V_0008_Strategy_Quality), 0);
+  });
+
+  scenario("Ending resolver: each combination yields a DISTINCT matrix ending", () => {
+    const seen = new Map();
+    let combos = 0;
+    const failures = [];
+    for (let culprit = 1; culprit <= 6; culprit++) {
+      for (let strategy = 0; strategy <= 3; strategy++) {
+        const qualities = strategy === 0 ? [0] : [0, 1, 2, 3];
+        for (const quality of qualities) {
+          const g = newGame(db, 500 + combos);
+          g.variables.setValue(V.V_0006_Culprit_ID, culprit);
+          g.switches.setValue(S.S_0002_Culprit_Locked, true);
+          g.variables.setValue(V.V_0007_Strategy_ID, strategy);
+          setUpQuality(g, strategy, quality, culprit);
+          callCommonEvent(g, 22);
+          combos++;
+          const result = g.variables.value(V.V_0030_Final_Result_ID);
+          const key = `${culprit}:${strategy}:${quality}`;
+          if (!(result > 0)) { failures.push(`${key} -> no result`); continue; }
+          if (result > 78) { failures.push(`${key} -> fell through to the fallback`); continue; }
+          if (seen.has(result)) failures.push(`${key} collides with ${seen.get(result)}`);
+          seen.set(result, key);
+        }
+      }
+    }
+    eq("combinations exercised", combos, 78);
+    check("every one resolved to its own matrix ending", failures.length === 0, failures.slice(0, 5).join("; "));
+    eq("distinct endings reached", seen.size, 78);
+  });
+
+  scenario("Ending resolver: the matrix answers without the fallback", () => {
+    const g = newGame(db, 640);
+    g.variables.setValue(V.V_0006_Culprit_ID, 4);
+    g.variables.setValue(V.V_0007_Strategy_ID, 2);
+    setUpQuality(g, 2, 3, 4);
+    callCommonEvent(g, 22);
+    const result = g.variables.value(V.V_0030_Final_Result_ID);
+    check("a real matrix ending, not the fallback", result > 0 && result <= 78, `result=${result}`);
+    check("the resolved flag is set", g.switches.value(1200));
+    const endingSwitches = [];
+    for (let i = 1201; i <= 1278; i++) if (g.switches.value(i)) endingSwitches.push(i);
+    eq("exactly one ending switch is on", endingSwitches.length, 1);
+    check("Evelyn's status was decided", g.variables.value(V.V_0015_Evelyn_Status) > 0);
+    check("the culprit's status was decided", g.variables.value(V.V_0037_Culprit_Status) > 0);
+  });
+
   scenario("Ending resolver: every culprit x strategy x quality yields a result", () => {
     let combos = 0, failures = [];
     for (let culprit = 1; culprit <= 6; culprit++) {
